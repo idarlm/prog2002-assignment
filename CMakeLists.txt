@@ -68,7 +68,7 @@ add_subdirectory(labs)
 
 # Add a subdirectory for a framework. This line is commented out, possibly because the
 # framework is either under development or optional.
-# add_subdirectory(framework)
+add_subdirectory(framework)
 
 # Add a subdirectory for assignments. Like the framework, this is commented out,
 # potentially to be enabled later when assignments are ready.

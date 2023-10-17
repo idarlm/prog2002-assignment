@@ -1,7 +1,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "logger.h"
+#include <Logger/logger.h>
 
 GLuint makeTriangle();
 GLuint makeSquare();
@@ -9,24 +9,24 @@ GLuint compileShader(const GLchar*, const GLchar*);
 
 int main(int argc, char **argv)
 {
-    Log::Init();
+    std::string tag = "Lab1";
 
     // GLFW error callback
     glfwSetErrorCallback( 
         [](int code, const char* msg)
         {
-            Log::Error("GLFW: " + (std::string)msg);
+            Log::error("GLFWErrorCallback", (std::string)msg);
         }
     );
 
     // GLFW initialization
     if(!glfwInit())
     {
-        Log::Error("Failed to initialize GLFW.");
+        Log::error(tag, "Failed to initialize GLFW.");
         return EXIT_FAILURE;
     }
 
-    Log::Info("GLFW Initialized.");
+    Log::info(tag, "GLFW Initialized.");
 
     // window creation
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -35,10 +35,10 @@ int main(int argc, char **argv)
 
     if(!window)
     {
-        Log::Error("Failed to create glfw window");
+        Log::error(tag, "Failed to create glfw window");
         return EXIT_FAILURE;
     }
-    Log::Info("Created Window");
+    Log::info(tag, "Created Window");
 
     glfwMakeContextCurrent(window);
 
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
         if(timer <= 0)
         {
             timer = 1;
-            Log::Info("Frame count last second: " + std::to_string(frameCount));
+            Log::info(tag, "Frame count last second: " + std::to_string(frameCount));
             frameCount = 0;
         }
 
@@ -159,10 +159,10 @@ int main(int argc, char **argv)
 
     // glfw cleanup
     glfwDestroyWindow(window);
-    Log::Info("Destroyed window");
+    Log::info(tag, "Destroyed window");
 
     glfwTerminate();
-    Log::Info("GLFW Terminated.");
+    Log::info(tag, "GLFW Terminated.");
 
     return EXIT_SUCCESS;
 }
