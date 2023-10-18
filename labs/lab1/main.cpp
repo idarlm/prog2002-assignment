@@ -9,7 +9,7 @@ GLuint compileShader(const GLchar*, const GLchar*);
 
 int main(int argc, char **argv)
 {
-    std::string tag = "Lab1";
+    const char* tag = "Lab1";
 
     // GLFW error callback
     glfwSetErrorCallback( 
