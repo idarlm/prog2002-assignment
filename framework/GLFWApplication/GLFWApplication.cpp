@@ -25,7 +25,7 @@ void GLFWApplication::Init() {
     glfwSetErrorCallback( 
         [](int code, const char* msg)
         {
-            Log::error("GLFW", "Code = ", code, ", Message = \"", msg, '"');
+            Log::error("GLFW Callback", "Code = ", code, ", Message = \"", msg, '"');
         }
     );
 
@@ -61,7 +61,7 @@ void GLFWApplication::Init() {
             const void* userParam)
         {            
             Log::error(
-                "OpenGL", "type = ", type,
+                "OpenGL Callback", "type = ", type,
                 ", severity = ", severity,
                 ", message = \"", message,
                 '"'
