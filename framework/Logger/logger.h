@@ -4,7 +4,6 @@
 #include <iostream>
 
 namespace Log {
-
     /// @brief Print content of any type
     template<typename T>
     void printargs(T arg) {
@@ -16,6 +15,19 @@ namespace Log {
     void printargs(T head, TArgs... tail) {
         std::cout << head;
         printargs(tail...);
+    }
+
+    /// @brief Print content of any type to std::cerr
+    template<typename T>
+    void printErrArgs(T arg) {
+        std::cerr << arg << '\n';
+    }
+
+    /// @brief Print all supplied arguments to std::cerr
+    template<typename T, typename... TArgs>
+    void printErrArgs(T head, TArgs... tail) {
+        std::cerr << head;
+        printErrArgs(tail...);
     }
 
     /// @brief Print an info message to std::cout
@@ -45,7 +57,7 @@ namespace Log {
     template<typename T, typename... TArgs>
     void error(const char* tag, T msg, TArgs... args) {
         std::cerr << "[" << tag << "] ERROR: ";
-        printargs(msg, args...);
+        printErrArgs(msg, args...);
     }
 }
 
