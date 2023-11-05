@@ -1,7 +1,8 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <Logger/logger.h>
+#include <logger.h>
+#include <GeometricTools.h>
 
 GLuint makeTriangle();
 GLuint makeSquare();
@@ -170,11 +171,7 @@ int main(int argc, char **argv)
 GLuint makeTriangle()
 {
     // array containing all the positions for the vertices in our triangle
-    float triangle[3*2] = {
-        -0.5f, -0.5f,   // vertex 1: x, y
-         0.5f, -0.5f,   // vertex 2: x, y
-         0.0f,  0.5f    // vertex 3: x, y
-    };
+    auto triangle = GeometricTools::UnitTriangle2D;
 
     // create vertex array object(VAO).
     // VAOs store the format of vertex data
@@ -196,7 +193,7 @@ GLuint makeTriangle()
                                                     // This does not affect the VAO we have bound.
                                                     // The VAO will be affected later when we call glVertexAttribPointer
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);  // transfer the position data to the buffer we just bound.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle.data(), GL_STATIC_DRAW);  // transfer the position data to the buffer we just bound.
 
     // Tell OpenGL what data we are providing in the currently bound buffer and how to read it.
     // This data is only now being added to the currently bound VAO.
@@ -225,12 +222,7 @@ GLuint makeTriangle()
 
 GLuint makeSquare()
 {
-    float square[4*2] = {                   // Each point represents a corner:
-    -0.75f, -0.75f,   // bottom left          3......2
-     0.75f, -0.75f,   // bottom right         :      :
-     0.75f,  0.75f,   // top right            :      :
-    -0.75f,  0.75f    // top left             0......1
-    };
+    auto square = GeometricTools::UnitSquare2D;
 
     uint indices[3*2] = {
         0, 1, 2,
@@ -252,7 +244,7 @@ GLuint makeSquare()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
     // load data into buffer
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(square), square.data(), GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // read buffer data into attrib array
