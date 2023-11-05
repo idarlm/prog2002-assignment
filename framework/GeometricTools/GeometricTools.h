@@ -20,8 +20,8 @@ namespace GeometricTools {
     /// @param rows Number of vertival divisions
     /// @return Array of values.
     const float *UnitGridGeometry2D(unsigned columns, unsigned rows) {
-        // vector to store the values
-        std::vector<float> arr{};
+        // vector to store the position values
+        std::vector<float> pos{};
 
         // calculate positions, working out way down one row at a time.
         for(int i = 0; i < rows+1; i++) {
@@ -31,11 +31,51 @@ namespace GeometricTools {
             // calculate x positions for this row
             for (int i = 0; i < columns+1; i++) {
                 float x = i * (1.f / (float)rows);
-                arr.push_back(x);
-                arr.push_back(y);
+                pos.push_back(x);
+                pos.push_back(y);
             }
         }
 
-        return arr.data();
+        return pos.data();
+    }
+
+    /// @brief Calculates indices for UnitGridGeometry2D.
+    /// @param columns Number of horizontal divisions
+    /// @param rows Number of vertical divisions
+    /// @return Array of indices
+    const float *UnitGridTopologyTriangles(unsigned columns, unsigned rows) {
+        /*
+        Indices:
+        (n)___(n+1)__(n+2)__..
+         |    . |    . |    . |
+         | .    | .    | .    |
+        (m)___(m+1)__(m+2)__..
+        
+        where n = row number * columns.
+        and   m = (row number + 1) * columns
+        */
+
+        // vector to store the indices
+        std::vector<int> indices{};
+        
+        // work our way down starting from the top row
+        for (int y = 0; y < rows; y++) {
+            //calculate indices for each tile horizontally
+            for (int x = 0; x < columns; x++) {
+                // calculate indices
+                auto n = y * columns;
+                auto m = (y + 1) * columns;
+
+                // triangle with corner in top left
+                indices.push_back(n);
+                indices.push_back(n+1);
+                indices.push_back(m);
+
+                // triangle with corner in bottom right
+                indices.push_back(m+1);
+                indices.push_back(m);
+                indices.push_back(n+1);
+            }
+        }
     }
 }
