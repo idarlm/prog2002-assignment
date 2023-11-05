@@ -18,13 +18,13 @@ int main() {
     // Start application
     auto app = Lab2Application("Lab 2", "v1");
     auto err = app.Init();
-    if (err != app.OK) {    // this is very golang inspired and might not be ideal cpp style for error handling...
+    if (err != app.OK) {
         Log::error("Lab2", "Failed to start application. error: ", err);
-        return;
+        return EXIT_FAILURE;
     }
     app.Run();
 
     
 
-    return 0;
+    return EXIT_SUCCESS;
 }
