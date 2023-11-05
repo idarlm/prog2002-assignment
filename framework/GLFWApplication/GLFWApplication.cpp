@@ -22,13 +22,6 @@ GLFWApplication::~GLFWApplication() {
  * Create a window with new OpenGL context.
 */
 unsigned GLFWApplication::Init() {
-    // Check that we haven't already created the window.
-    // Will probably never happen, but better safe than sorry.
-    if(window) {
-        Log::error("GLFWApplication", "Multiple calls to Init()");
-        return ERROR_MULTIPLE_INIT;
-    }
-
     // GLFW initialization
     if(!glfwInit())
     {
@@ -44,8 +37,6 @@ unsigned GLFWApplication::Init() {
         }
     );
 
-    Log::info("GLFWApplication", "GLFW Initialized.");
-
     // window creation
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -56,7 +47,6 @@ unsigned GLFWApplication::Init() {
         Log::error("GLFWApplication", "Failed to create glfw window");
         return ERROR_GLFW_WINDOW_FAILED;
     }
-    Log::info("GLFWApplication", "Created Window");
 
     glfwMakeContextCurrent(window);
 

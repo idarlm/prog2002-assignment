@@ -22,5 +22,4 @@ public:
     const unsigned OK = 0;
     const unsigned ERROR_GLFW_INIT_FAILED = 1;
     const unsigned ERROR_GLFW_WINDOW_FAILED = 2;
-    const unsigned ERROR_MULTIPLE_INIT = 3;
 };
