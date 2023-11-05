@@ -2,23 +2,29 @@
 #include <glad/glad.h>
 #include <GLFWApplication.h>
 
-class gigaGLFW : public GLFWApplication {
+class Lab2Application : public GLFWApplication {
 public:
-    gigaGLFW(std::string name, std::string version) : GLFWApplication(name, version) {
+    Lab2Application(std::string name, std::string version) : GLFWApplication(name, version) {
         
     }
 
-    void Run() override {
-        Log::info("gigaGLFW", "Running away from life...");
+    unsigned Run() const override {
+        Log::info("Lab2Application", "Running away from life...");
+        return 0;
     }
 };
 
 int main() {
-    Log::info("Lab2", "test");
-    Log::info("Test", 1, 2.53, 'm');
-    auto giga = gigaGLFW("Test", "v0");
-    giga.Init();
-    giga.Run();
+    // Start application
+    auto app = Lab2Application("Lab 2", "v1");
+    auto err = app.Init();
+    if (err != app.OK) {    // this is very golang inspired and might not be ideal cpp style for error handling...
+        Log::error("Lab2", "Failed to start application. error: ", err);
+        return;
+    }
+    app.Run();
+
+    
 
     return 0;
 }

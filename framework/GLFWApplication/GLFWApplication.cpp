@@ -1,24 +1,39 @@
-#include "GLFWApplication.h"
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <logger.h>
+#include <glad/glad.h>
+#include "GLFWApplication.h"
 
 GLFWApplication::GLFWApplication(std::string name, std::string version)
     : name(name), version(version) {
     Log::info("GLFWApplication", "Starting application: " + name + " (" + version + ")");
 }
 
+/**
+ * Destroy window and perform additional cleanup.
+*/
 GLFWApplication::~GLFWApplication() {
+    Log::info("GLFWApplication", "Destroying window...");
 
+    glfwDestroyWindow(window);
+
+    Log::info("GLFWApplication", "Goodbye!");
 }
 
-void GLFWApplication::Init() {
+/**
+ * Create a window with new OpenGL context.
+*/
+unsigned GLFWApplication::Init() {
+    // Check that we haven't already created the window.
+    // Will probably never happen, but better safe than sorry.
+    if(window) {
+        Log::error("GLFWApplication", "Multiple calls to Init()");
+        return ERROR_MULTIPLE_INIT;
+    }
+
     // GLFW initialization
     if(!glfwInit())
     {
         Log::error("GLFWApplication", "Failed to initialize GLFW.");
-        return;
+        return ERROR_GLFW_INIT_FAILED;
     }
 
     // set GLFW error callback
@@ -33,13 +48,13 @@ void GLFWApplication::Init() {
 
     // window creation
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 9);
-    auto window = glfwCreateWindow(480, 360, "Test window", NULL, NULL);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    window = glfwCreateWindow(480, 360, "Test window", NULL, NULL);
 
     if(!window)
     {
         Log::error("GLFWApplication", "Failed to create glfw window");
-        return;
+        return ERROR_GLFW_WINDOW_FAILED;
     }
     Log::info("GLFWApplication", "Created Window");
 
@@ -61,13 +76,15 @@ void GLFWApplication::Init() {
             const void* userParam)
         {            
             Log::error(
-                "OpenGL Callback", "type = ", type,
+                "OpenGL Callback", 
+                ", type = ", type,
                 ", severity = ", severity,
-                ", message = \"", message,
-                '"'
+                ", message = \"", message, '"'
                 );
         },
         0
     );
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+
+    return OK;
 }

@@ -1,18 +1,26 @@
 #include <iostream>
+#include <GLFW/glfw3.h>
 
 class GLFWApplication {
 private:
     std::string name = "";
     std::string version = "";
 
+    GLFWwindow* window;
 public:
     //constructor / destructor
     GLFWApplication(std::string name, std::string version);
     ~GLFWApplication();
 
-    virtual void Init();
-    virtual void Run() = 0;
+    virtual unsigned Init();
+    virtual unsigned Run() const = 0;
 
     inline std::string getName() { return name; }
     inline std::string getVersion() { return version; }
+
+    // Error codes
+    const unsigned OK = 0;
+    const unsigned ERROR_GLFW_INIT_FAILED = 1;
+    const unsigned ERROR_GLFW_WINDOW_FAILED = 2;
+    const unsigned ERROR_MULTIPLE_INIT = 3;
 };
