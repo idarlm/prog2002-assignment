@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <logger.h>
 #include <GeometricTools.h>
+#include "shaders.h"
 
 GLuint makeTriangle();
 GLuint makeSquare();
@@ -69,43 +70,11 @@ int main(int argc, char **argv)
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
     // ..::DATA LOADING::..
-    // triangle shaders
-    const std::string tvertexShaderSrc = R"(
-        #version 430 core
-
-        layout(location = 0) in vec2 position;
-
-        void main()
-        {
-            gl_Position = vec4(position, 0.0, 1.0);
-        }
-    )";
-
-    const std::string tfragmentShaderSrc = R"(
-        #version 430 core
-        
-        out vec4 color;
-        void main()
-        {
-            color = vec4(1.0, 1.0, 1.0, 1.0);
-        }
-    )";
-
-    const std::string sfragmentShaderSrc = R"(
-        #version 430 core
-        
-        out vec4 color;
-        void main()
-        {
-            color = vec4(1.0, 0.1, 0.1, 1.0);
-        }
-    )";
-
     auto triangle = makeTriangle();
-    auto triangleShaderProgram = compileShader(tvertexShaderSrc.c_str(), tfragmentShaderSrc.c_str());
+    auto triangleShaderProgram = compileShader(Shader::triVertexShaderSrc.c_str(), Shader::triFragmentShaderSrc.c_str());
 
     auto square = makeSquare();
-    auto squareShaderProgram = compileShader(tvertexShaderSrc.c_str(), sfragmentShaderSrc.c_str());
+    auto squareShaderProgram = compileShader(Shader::sqrVertexShaderSrc.c_str(), Shader::sqrFragmentShaderSrc.c_str());
     
     // ..::Application loop::..
 
@@ -127,7 +96,7 @@ int main(int argc, char **argv)
         if(timer <= 0)
         {
             timer = 1;
-            Log::info(tag, "Frame count last second: " + std::to_string(frameCount));
+            //Log::info(tag, "Frame count last second: " + std::to_string(frameCount));
             frameCount = 0;
         }
 
@@ -170,6 +139,9 @@ int main(int argc, char **argv)
 
 GLuint makeTriangle()
 {
+    // This function has overly detailed comments as i was taking notes 
+    // from learnopengl and the khronos wiki.
+
     // array containing all the positions for the vertices in our triangle
     auto triangle = GeometricTools::UnitTriangle2D;
 
@@ -224,6 +196,13 @@ GLuint makeSquare()
 {
     auto square = GeometricTools::UnitSquare2D;
 
+    GLubyte colors[4*3] = { // normalized unsigned bytes for colour data
+        255, 255, 0,
+          0, 255, 255,
+        255,   0, 255,
+        255, 255, 255
+    };
+
     uint indices[3*2] = {
         0, 1, 2,
         0, 3, 2
@@ -235,21 +214,33 @@ GLuint makeSquare()
     glBindVertexArray(vao);
 
     // generate buffers
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    GLuint vbo[2];
+    glGenBuffers(2, vbo);
 
+    // vertex position buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(square), square.data(), GL_STATIC_DRAW);
+
+    // vertex color buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLubyte)*12, &colors, GL_DYNAMIC_DRAW);
+
+    // index buffer
     GLuint ebo;
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-    // load data into buffer
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square), square.data(), GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // read buffer data into attrib array
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), nullptr);
-    glEnableVertexAttribArray(0);   // enable the attrib pointer we just made
+    // position data:
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
+
+    // color data:
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, 3*sizeof(GLubyte), (void*)0);
 
     return vao;
 }
