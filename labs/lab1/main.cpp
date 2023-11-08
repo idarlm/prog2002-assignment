@@ -203,7 +203,7 @@ GLuint makeSquare()
         255, 255, 255
     };
 
-    uint indices[3*2] = {
+    unsigned indices[3*2] = {
         0, 1, 2,
         0, 3, 2
     };
