@@ -1,7 +1,9 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "logger.h"
+#include <logger.h>
+#include <GeometricTools.h>
+#include "shaders.h"
 
 GLuint makeTriangle();
 GLuint makeSquare();
@@ -9,24 +11,24 @@ GLuint compileShader(const GLchar*, const GLchar*);
 
 int main(int argc, char **argv)
 {
-    Log::Init();
+    const char* tag = "Lab1";
 
     // GLFW error callback
     glfwSetErrorCallback( 
         [](int code, const char* msg)
         {
-            Log::Error("GLFW: " + (std::string)msg);
+            Log::error("GLFWErrorCallback", (std::string)msg);
         }
     );
 
     // GLFW initialization
     if(!glfwInit())
     {
-        Log::Error("Failed to initialize GLFW.");
+        Log::error(tag, "Failed to initialize GLFW.");
         return EXIT_FAILURE;
     }
 
-    Log::Info("GLFW Initialized.");
+    Log::info(tag, "GLFW Initialized.");
 
     // window creation
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -35,10 +37,10 @@ int main(int argc, char **argv)
 
     if(!window)
     {
-        Log::Error("Failed to create glfw window");
+        Log::error(tag, "Failed to create glfw window");
         return EXIT_FAILURE;
     }
-    Log::Info("Created Window");
+    Log::info(tag, "Created Window");
 
     glfwMakeContextCurrent(window);
 
@@ -68,43 +70,11 @@ int main(int argc, char **argv)
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
     // ..::DATA LOADING::..
-    // triangle shaders
-    const std::string tvertexShaderSrc = R"(
-        #version 430 core
-
-        layout(location = 0) in vec2 position;
-
-        void main()
-        {
-            gl_Position = vec4(position, 0.0, 1.0);
-        }
-    )";
-
-    const std::string tfragmentShaderSrc = R"(
-        #version 430 core
-        
-        out vec4 color;
-        void main()
-        {
-            color = vec4(1.0, 1.0, 1.0, 1.0);
-        }
-    )";
-
-    const std::string sfragmentShaderSrc = R"(
-        #version 430 core
-        
-        out vec4 color;
-        void main()
-        {
-            color = vec4(1.0, 0.1, 0.1, 1.0);
-        }
-    )";
-
     auto triangle = makeTriangle();
-    auto triangleShaderProgram = compileShader(tvertexShaderSrc.c_str(), tfragmentShaderSrc.c_str());
+    auto triangleShaderProgram = compileShader(Shader::triVertexShaderSrc.c_str(), Shader::triFragmentShaderSrc.c_str());
 
     auto square = makeSquare();
-    auto squareShaderProgram = compileShader(tvertexShaderSrc.c_str(), sfragmentShaderSrc.c_str());
+    auto squareShaderProgram = compileShader(Shader::sqrVertexShaderSrc.c_str(), Shader::sqrFragmentShaderSrc.c_str());
     
     // ..::Application loop::..
 
@@ -126,7 +96,7 @@ int main(int argc, char **argv)
         if(timer <= 0)
         {
             timer = 1;
-            Log::Info("Frame count last second: " + std::to_string(frameCount));
+            //Log::info(tag, "Frame count last second: " + std::to_string(frameCount));
             frameCount = 0;
         }
 
@@ -159,22 +129,21 @@ int main(int argc, char **argv)
 
     // glfw cleanup
     glfwDestroyWindow(window);
-    Log::Info("Destroyed window");
+    Log::info(tag, "Destroyed window");
 
     glfwTerminate();
-    Log::Info("GLFW Terminated.");
+    Log::info(tag, "GLFW Terminated.");
 
     return EXIT_SUCCESS;
 }
 
 GLuint makeTriangle()
 {
+    // This function has overly detailed comments as i was taking notes 
+    // from learnopengl and the khronos wiki.
+
     // array containing all the positions for the vertices in our triangle
-    float triangle[3*2] = {
-        -0.5f, -0.5f,   // vertex 1: x, y
-         0.5f, -0.5f,   // vertex 2: x, y
-         0.0f,  0.5f    // vertex 3: x, y
-    };
+    auto triangle = GeometricTools::UnitTriangle2D;
 
     // create vertex array object(VAO).
     // VAOs store the format of vertex data
@@ -196,7 +165,7 @@ GLuint makeTriangle()
                                                     // This does not affect the VAO we have bound.
                                                     // The VAO will be affected later when we call glVertexAttribPointer
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);  // transfer the position data to the buffer we just bound.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle.data(), GL_STATIC_DRAW);  // transfer the position data to the buffer we just bound.
 
     // Tell OpenGL what data we are providing in the currently bound buffer and how to read it.
     // This data is only now being added to the currently bound VAO.
@@ -225,14 +194,16 @@ GLuint makeTriangle()
 
 GLuint makeSquare()
 {
-    float square[4*2] = {                   // Each point represents a corner:
-    -0.75f, -0.75f,   // bottom left          3......2
-     0.75f, -0.75f,   // bottom right         :      :
-     0.75f,  0.75f,   // top right            :      :
-    -0.75f,  0.75f    // top left             0......1
+    auto square = GeometricTools::UnitSquare2D;
+
+    GLubyte colors[4*3] = { // normalized unsigned bytes for colour data
+        255, 255, 0,
+          0, 255, 255,
+        255,   0, 255,
+        255, 255, 255
     };
 
-    uint indices[3*2] = {
+    GLuint indices[3*2] = {
         0, 1, 2,
         0, 3, 2
     };
@@ -243,21 +214,33 @@ GLuint makeSquare()
     glBindVertexArray(vao);
 
     // generate buffers
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    GLuint vbo[2];
+    glGenBuffers(2, vbo);
 
+    // vertex position buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(square), square.data(), GL_STATIC_DRAW);
+
+    // vertex color buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLubyte)*12, &colors, GL_DYNAMIC_DRAW);
+
+    // index buffer
     GLuint ebo;
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-    // load data into buffer
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // read buffer data into attrib array
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), nullptr);
-    glEnableVertexAttribArray(0);   // enable the attrib pointer we just made
+    // position data:
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
+
+    // color data:
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, 3*sizeof(GLubyte), (void*)0);
 
     return vao;
 }
