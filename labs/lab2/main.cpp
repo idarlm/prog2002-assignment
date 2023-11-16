@@ -1,18 +1,8 @@
-#include <logger.h>
+#define GLFW_INCLUDE_NONE
 #include <glad/glad.h>
-#include <GLFWApplication.h>
+#include <logger.h>
+#include "lab2application.h"
 
-class Lab2Application : public GLFWApplication {
-public:
-    Lab2Application(std::string name, std::string version) : GLFWApplication(name, version) {
-        
-    }
-
-    unsigned Run() const override {
-        Log::info("Lab2Application", "Running away from life...");
-        return 0;
-    }
-};
 
 int main() {
     // Start application

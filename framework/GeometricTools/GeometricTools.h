@@ -1,3 +1,6 @@
+#ifndef GEOMETRICTOOLS_H_
+#define GEOMETRICTOOLS_H_
+
 #include <array>
 #include <vector>
 
@@ -26,11 +29,11 @@ namespace GeometricTools {
         // calculate positions, working out way up one row at a time.
         for(int i = 0; i < rows+1; i++) {
             // calculate y position for this row
-            float y = i * (1.f / columns) - 0.5f;
+            float y = i * (1.f / (float)rows) - 0.5f;
 
             // calculate x positions for this row
             for (int i = 0; i < columns+1; i++) {
-                float x = i * (1.f / (float)rows) - 0.5f;
+                float x = i * (1.f / (float)columns) - 0.5f;
                 pos.push_back(x);
                 pos.push_back(y);
             }
@@ -40,8 +43,8 @@ namespace GeometricTools {
     }
 
     /// @brief Calculates indices for UnitGridGeometry2D.
-    /// @param columns Number of horizontal divisions
-    /// @param rows Number of vertical divisions
+    /// @param columns - Number of horizontal divisions
+    /// @param rows - Number of vertical divisions
     /// @return Array of indices
     const std::vector<unsigned> UnitGridTopologyTriangles(unsigned columns, unsigned rows) {
         /*
@@ -72,12 +75,14 @@ namespace GeometricTools {
                 indices.push_back(m);
 
                 // triangle with corner in bottom right
-                indices.push_back(m);
                 indices.push_back(m+1);
                 indices.push_back(n+1);
+                indices.push_back(m);
             }
         }
 
         return indices;
     }
 }
+
+#endif

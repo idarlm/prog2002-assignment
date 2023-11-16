@@ -1,8 +1,11 @@
+#ifndef GLFWAPPLICATION_H_
+#define GLFWAPPLICATION_H_
+
 #include <iostream>
 #include <GLFW/glfw3.h>
 
 class GLFWApplication {
-private:
+protected:
     std::string name = "";
     std::string version = "";
 
@@ -23,3 +26,5 @@ public:
     const unsigned ERROR_GLFW_INIT_FAILED = 1;
     const unsigned ERROR_GLFW_WINDOW_FAILED = 2;
 };
+
+#endif
