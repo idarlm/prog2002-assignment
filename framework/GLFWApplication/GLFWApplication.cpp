@@ -3,7 +3,7 @@
 #include "GLFWApplication.h"
 
 GLFWApplication::GLFWApplication(std::string name, std::string version)
-    : name(name), version(version) {
+    : name(name), version(version), window(nullptr) {
     Log::info("GLFWApplication", "Starting application: " + name + " (" + version + ")");
 }
 
@@ -67,14 +67,18 @@ unsigned GLFWApplication::Init() {
         {            
             Log::error(
                 "OpenGL Callback", 
-                ", type = ", type,
+                "type = ", type,
                 ", severity = ", severity,
-                ", message = \"", message, '"'
+                "\n", message
                 );
         },
         0
     );
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+
+    Log::info("OpenGL", "Vendor: ", glGetString(GL_VENDOR));
+    Log::info("OpenGL", "Renderer: ", glGetString(GL_RENDERER));
+    Log::info("OpenGL", "OpenGL version: ", glGetString(GL_VERSION));
 
     return OK;
 }
