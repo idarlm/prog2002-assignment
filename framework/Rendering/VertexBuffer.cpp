@@ -1,9 +1,8 @@
+#include <glad/glad.h>
 #include "VertexBuffer.h"
 
-VertexBuffer::VertexBuffer(const void* vertices, GLsizei size)
+VertexBuffer::VertexBuffer(const void* vertices, GLsizei size) : m_vertexBufferID(0)
 {
-	m_size = size;
-
 	// create and bind vertex buffer
 	glGenBuffers(1, &m_vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
@@ -38,8 +37,4 @@ void VertexBuffer::BufferSubData(GLintptr offset, GLsizeiptr size, const void* d
 
 	// load data
 	glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
-}
-
-GLsizei VertexBuffer::Size() const {
-	return m_size;
 }
