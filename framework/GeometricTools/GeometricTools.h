@@ -1,3 +1,6 @@
+#ifndef GEOMETRICTOOLS_H_
+#define GEOMETRICTOOLS_H_
+
 #include <array>
 #include <vector>
 
@@ -40,8 +43,8 @@ namespace GeometricTools {
     }
 
     /// @brief Calculates indices for UnitGridGeometry2D.
-    /// @param columns Number of horizontal divisions
-    /// @param rows Number of vertical divisions
+    /// @param columns - Number of horizontal divisions
+    /// @param rows - Number of vertical divisions
     /// @return Array of indices
     const std::vector<unsigned> UnitGridTopologyTriangles(unsigned columns, unsigned rows) {
         /*
@@ -81,3 +84,5 @@ namespace GeometricTools {
         return indices;
     }
 }
+
+#endif
