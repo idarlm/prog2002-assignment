@@ -1,4 +1,4 @@
-add_library(Rendering STATIC ShaderDataTypes.h VertexBuffer.h VertexBuffer.cpp)
+add_library(Rendering STATIC ShaderDataTypes.h VertexBuffer.h VertexBuffer.cpp "IndexBuffer.h" "IndexBuffer.cpp")
 add_library(Framework::Rendering ALIAS Rendering)
 
 target_link_libraries(Rendering PUBLIC glad)
