@@ -6,7 +6,7 @@
 
 int main() {
     // Start application
-    auto app = Lab2Application("Lab 2", "v1");
+    auto app = Lab2Application("Lab 2", "v2");
     auto err = app.Init();
     if (err != app.OK) {
         Log::error("Lab2", "Failed to start application. error: ", err);

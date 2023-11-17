@@ -21,14 +21,8 @@ unsigned Lab2Application::Init()
     m_boardVerts = new VertexBuffer(verts.data(), verts.size() * sizeof(float));
 
     // create EBO
-    auto indices = GeometricTools::UnitGridTopologyTriangles(8, 8);
-    m_indiceCount = indices.size();
-    Log::info("Init", "indices.size() = ", m_indiceCount, ", sizeof(indices) = ", indices.size() * sizeof(GLuint));
-
-    GLuint ebo;
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), indices.data(), GL_STATIC_DRAW);
+    auto indices = GeometricTools::UnitGridTopologyTriangles(8, 8);   
+    m_indexBuffer = new IndexBuffer(indices.data(), indices.size());
 
     // add vertex attributes
     glEnableVertexAttribArray(0);
@@ -99,13 +93,14 @@ unsigned Lab2Application::Run() const
         // draw board
         glBindVertexArray(m_boardArray);
         glUseProgram(m_shaderProg);
-        glDrawElements(GL_TRIANGLES, m_indiceCount, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, m_indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         // display new frame
         glfwSwapBuffers(window);
     }
 
     delete m_boardVerts;
+    delete m_indexBuffer;
 
     return 0;
 }

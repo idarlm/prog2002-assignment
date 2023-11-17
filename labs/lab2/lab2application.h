@@ -3,7 +3,7 @@
 
 #include <GLFWApplication.h>
 #include <VertexBuffer.h>
-#include <memory>
+#include <IndexBuffer.h>
 
 class Lab2Application : public GLFWApplication {
 public:
@@ -16,8 +16,8 @@ public:
 
 private:
 	VertexBuffer* m_boardVerts;
+	IndexBuffer* m_indexBuffer;
 	GLuint m_boardArray;
-	GLsizei m_indiceCount;
 	GLuint m_shaderProg;
 };
 
