@@ -14,6 +14,10 @@ IndexBuffer::IndexBuffer(GLuint* indices, GLsizei count)
 IndexBuffer::~IndexBuffer()
 {
 	//TODO: Make sure this buffer is not bound?
+	//		I think deleting while bound is ok
+	//		because it just invalidates the name of the buffer,
+	//		and the actual deletion is deferred until no VAOs has
+	//		it bound. But i need to double check that.
 	glDeleteBuffers(1, &IndexBufferID);
 }
 
