@@ -33,7 +33,7 @@ void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuf
 	vertexBuffer->Bind();
 	auto layout = vertexBuffer->GetLayout();
 	auto attribs = layout.GetAttributes();
-	for each (auto a in attribs)
+	for (auto a : attribs)
 	{
 		auto i = m_attribCount++;
 		glEnableVertexAttribArray(i);
