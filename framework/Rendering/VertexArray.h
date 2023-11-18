@@ -28,6 +28,7 @@ public:
 
 private:
     GLuint m_vertexArrayID;
+    GLuint m_attribCount;
     std::vector<std::shared_ptr<VertexBuffer>> VertexBuffers;
     std::shared_ptr<IndexBuffer> IdxBuffer;
 
