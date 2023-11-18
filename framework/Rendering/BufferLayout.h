@@ -21,7 +21,7 @@ struct BufferAttribute {
 
 class BufferLayout {
 public:
-    BufferLayout() {}
+    BufferLayout() : Stride(0) {}
     BufferLayout(const std::initializer_list<BufferAttribute>& attributes)
         : Attributes(attributes) {
         this->CalculateOffsetAndStride();
