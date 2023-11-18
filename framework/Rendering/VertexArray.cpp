@@ -1,14 +1,19 @@
 #include "VertexArray.h"
 #include "ShaderDataTypes.h"
+#include <iostream>
 
-VertexArray::VertexArray() : m_vertexArrayID(0) 
+VertexArray::VertexArray() 
+	: m_vertexArrayID(0), m_attribCount(0)
 {
 	// generate vertex array
 	glGenVertexArrays(1, &m_vertexArrayID);
 	glBindVertexArray(m_vertexArrayID);
 }
 
-VertexArray::~VertexArray() {}
+VertexArray::~VertexArray() 
+{
+	glDeleteVertexArrays(1, &m_vertexArrayID);
+}
 
 void VertexArray::Bind() const
 {
@@ -22,6 +27,9 @@ void VertexArray::Unbind() const
 
 void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 {
+	// store a new shared pointer that is scoped to the VertexArray lifetime.
+	// this prevents a buffer from being deleted when it is still in use.
+	VertexBuffers.push_back(vertexBuffer);
 	vertexBuffer->Bind();
 	auto layout = vertexBuffer->GetLayout();
 	auto attribs = layout.GetAttributes();
@@ -31,7 +39,7 @@ void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuf
 		glEnableVertexAttribArray(i);
 		glVertexAttribPointer(
 			i,
-			a.Size,
+			ShaderDataTypeComponentCount(a.Type),
 			ShaderDataTypeToOpenGLBaseType(a.Type),
 			a.Normalized,
 			layout.GetStride(),
