@@ -10,23 +10,30 @@ Lab2Application::Lab2Application(std::string name, std::string version)
 
 unsigned Lab2Application::Init() 
 {
-    GLFWApplication::Init();
+    if (GLFWApplication::Init() != GLFWApplication::OK) 
+    {
+        Log::error("Lab2Application", "Failed to init GLFWApplication.");
+        return 1;
+    }
 
     // create VAO
-    glGenVertexArrays(1, &m_boardArray);
-    glBindVertexArray(m_boardArray);
+    m_vertArray = std::make_shared<VertexArray>();
 
     // create VBO
     auto verts = GeometricTools::UnitGridGeometry2D(8, 8);
-    m_boardVerts = new VertexBuffer(verts.data(), verts.size() * sizeof(float));
+    auto vbuff = std::make_shared<VertexBuffer>(verts.data(), verts.size() * sizeof(float));
+    vbuff->SetLayout(
+        BufferLayout({
+            {ShaderDataType::Float2, "position"}
+        })
+    );
 
     // create EBO
     auto indices = GeometricTools::UnitGridTopologyTriangles(8, 8);   
-    m_indexBuffer = new IndexBuffer(indices.data(), indices.size());
+    auto ibuff = std::make_shared<IndexBuffer>(indices.data(), indices.size());
 
-    // add vertex attributes
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float)*2, 0);
+    m_vertArray->AddVertexBuffer(vbuff);
+    m_vertArray->SetIndexBuffer(ibuff);
 
     // compile shaders
     auto vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -91,16 +98,13 @@ unsigned Lab2Application::Run() const
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw board
-        glBindVertexArray(m_boardArray);
+        m_vertArray->Bind();
         glUseProgram(m_shaderProg);
-        glDrawElements(GL_TRIANGLES, m_indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         // display new frame
         glfwSwapBuffers(window);
     }
-
-    delete m_boardVerts;
-    delete m_indexBuffer;
 
     return 0;
 }
