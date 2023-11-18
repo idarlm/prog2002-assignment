@@ -4,6 +4,8 @@
 #include <GLFWApplication.h>
 #include <VertexBuffer.h>
 #include <IndexBuffer.h>
+#include <VertexArray.h>
+#include <memory>
 
 class Lab2Application : public GLFWApplication {
 public:
@@ -15,9 +17,8 @@ public:
 	unsigned Run() const override;
 
 private:
-	VertexBuffer* m_boardVerts;
-	IndexBuffer* m_indexBuffer;
-	GLuint m_boardArray;
+	std::shared_ptr<VertexArray> m_vertArray;
+	//GLuint m_boardArray;
 	GLuint m_shaderProg;
 };
 
