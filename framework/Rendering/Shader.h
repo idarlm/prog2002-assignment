@@ -14,6 +14,7 @@ public:
 	void Bind() const;
 	void Unbind() const;
 	void UploadUniformFloat2(const std::string& name, const glm::vec2& vector);
+	void UploadUniformMat4x4(const std::string& name, const glm::mat4& matrix);
 
 	GLint GetUniformLocation(const GLchar* name);
 

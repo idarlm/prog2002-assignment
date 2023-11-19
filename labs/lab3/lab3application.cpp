@@ -2,6 +2,8 @@
 #include <glad/glad.h>
 #include <GeometricTools.h>
 #include <ShaderDataTypes.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "lab3application.h"
 #include "shaders.h"
 
@@ -50,6 +52,13 @@ unsigned Lab3Application::Run() const
     GLint selected = 0;
     auto u_selected = m_shaderProg->GetUniformLocation("selected_vertex");
 
+    auto projectionMatrix = glm::perspective(45.f, 1.f, 1.f, -10.f);
+    auto viewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
+    auto modelMatrix = glm::mat4(1.f);
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(0.f, 0.f, 0.f));
+    modelMatrix = glm::rotate(modelMatrix, glm::radians(0.f), glm::vec3(0.f, 1.f, 0.f));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(2.f, 2.f, 1.f));
+
     while (!glfwWindowShouldClose(window)) 
     {
         glfwPollEvents();
@@ -65,6 +74,7 @@ unsigned Lab3Application::Run() const
         // draw board
         m_vertArray->Bind();
         m_shaderProg->Bind();
+        m_shaderProg->UploadUniformMat4x4("transform", modelMatrix);
         glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         // display new frame
