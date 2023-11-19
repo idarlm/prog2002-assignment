@@ -88,10 +88,16 @@ unsigned Lab2Application::Init()
 unsigned Lab2Application::Run() const 
 {
     Log::info("Lab2Application", "Starting application loop");
+    GLint selected = 0;
+    auto u_selected = glGetUniformLocation(m_shaderProg, "selected_vertex");
 
     while (!glfwWindowShouldClose(window)) 
     {
         glfwPollEvents();
+        
+        // update selected tile
+        selected = (9 * (selectionY % 8)) + (selectionX % 8);
+        glUniform1i(u_selected, selected);
 
         // clear window
         glClearColor(0.1f, 0.25f, 0.5f, 1.0f);

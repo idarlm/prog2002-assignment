@@ -16,6 +16,9 @@ public:
 	// start application loop
 	unsigned Run() const override;
 
+	GLuint selectionX = 0;
+	GLuint selectionY = 0;
+
 private:
 	std::shared_ptr<VertexArray> m_vertArray;
 	//GLuint m_boardArray;
