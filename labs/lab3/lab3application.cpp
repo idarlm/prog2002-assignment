@@ -58,9 +58,19 @@ unsigned Lab3Application::Run() const
     modelMatrix = glm::rotate(modelMatrix, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
     modelMatrix = glm::scale(modelMatrix, glm::vec3(2.f, 2.f, 2.f));
 
+    glEnable(GL_DEPTH_TEST);
+
     while (!glfwWindowShouldClose(window)) 
     {
         glfwPollEvents();
+
+        auto time = (float)glfwGetTime();
+        auto modelMatrix2 = glm::mat4(1.f);
+        modelMatrix2 = glm::translate(modelMatrix2, glm::vec3(0.f, 2.f * sin(time), 0.f));
+        modelMatrix2 = glm::translate(modelMatrix2, glm::vec3(0.f, -2.5f, 0.f));
+        modelMatrix2 = glm::rotate(modelMatrix2, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
+        modelMatrix2 = glm::rotate(modelMatrix2, time, glm::vec3(0.f, 0.f, 1.f));
+        modelMatrix2 = glm::scale(modelMatrix2, glm::vec3(2.f, 2.f, 2.f));
 
         // update selected tile
         selected = (9 * (selectionY % 8)) + (selectionX % 8);
@@ -68,7 +78,7 @@ unsigned Lab3Application::Run() const
 
         // clear window
         glClearColor(0.1f, 0.25f, 0.5f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // draw board
         m_vertArray->Bind();
@@ -76,6 +86,9 @@ unsigned Lab3Application::Run() const
         m_shaderProg->UploadUniformMat4x4("projection", projectionMatrix);
         m_shaderProg->UploadUniformMat4x4("view", viewMatrix);
         m_shaderProg->UploadUniformMat4x4("model", modelMatrix);
+        glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+
+        m_shaderProg->UploadUniformMat4x4("model", modelMatrix2);
         glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         // display new frame
