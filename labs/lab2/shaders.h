@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace Shader {
+namespace Lab2Shaders {
     const std::string sqrVertexShaderSrc = R"(
         #version 430 core
 
