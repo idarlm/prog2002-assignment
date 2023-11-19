@@ -21,6 +21,8 @@ public:
     inline std::string getName() { return name; }
     inline std::string getVersion() { return version; }
 
+    GLFWwindow* getWindow() const { return window; }
+
     // Error codes
     const unsigned OK = 0;
     const unsigned ERROR_GLFW_INIT_FAILED = 1;
