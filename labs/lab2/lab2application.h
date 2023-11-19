@@ -5,6 +5,7 @@
 #include <VertexBuffer.h>
 #include <IndexBuffer.h>
 #include <VertexArray.h>
+#include <Shader.h>
 #include <memory>
 
 class Lab2Application : public GLFWApplication {
@@ -16,10 +17,12 @@ public:
 	// start application loop
 	unsigned Run() const override;
 
+	GLuint selectionX = 0;
+	GLuint selectionY = 0;
+
 private:
 	std::shared_ptr<VertexArray> m_vertArray;
-	//GLuint m_boardArray;
-	GLuint m_shaderProg;
+	std::shared_ptr<Shader> m_shaderProg;
 };
 
 #endif // LAB2APPLICATION_H_

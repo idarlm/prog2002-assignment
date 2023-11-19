@@ -70,14 +70,14 @@ namespace GeometricTools {
                 auto m = x + (y + 1) * (columns + 1);
 
                 // triangle with corner in top left
-                indices.push_back(n);
-                indices.push_back(n+1);
                 indices.push_back(m);
+                indices.push_back(m+1);
+                indices.push_back(n);
 
                 // triangle with corner in bottom right
                 indices.push_back(m+1);
                 indices.push_back(n+1);
-                indices.push_back(m);
+                indices.push_back(n);
             }
         }
 

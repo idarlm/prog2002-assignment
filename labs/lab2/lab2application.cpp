@@ -35,52 +35,11 @@ unsigned Lab2Application::Init()
     m_vertArray->AddVertexBuffer(vbuff);
     m_vertArray->SetIndexBuffer(ibuff);
 
-    // compile shaders
-    auto vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    auto vss = Shader::sqrVertexShaderSrc.c_str();
-    glShaderSource(vertexShader, 1, &vss, 0);
-    glCompileShader(vertexShader);
-
-    // this snippet is borrowed from the Khronos OpenGL wiki:
-    GLint isCompiled = 0;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-
-        // We don't need the shader anymore.
-        glDeleteShader(vertexShader);
-
-        // Use the infoLog as you see fit.
-        Log::info("Shader compilation", infoLog.data());
-
-        // In this simple program, we'll just leave
-        return 1;
-    }
-    // source: https://www.khronos.org/opengl/wiki/Shader_Compilation#Shader_error_handling
-
-    auto fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-    auto fss = Shader::sqrFragmentShaderSrc.c_str();
-    glShaderSource(fragShader, 1, &fss, 0);
-    glCompileShader(fragShader);
-
-    auto shaderProg = glCreateProgram();
-    glAttachShader(shaderProg, vertexShader);
-    glAttachShader(shaderProg, fragShader);
-    glLinkProgram(shaderProg);
-    glUseProgram(shaderProg);
-
-    //glDetachShader(shaderProg, vertexShader);
-    //glDetachShader(shaderProg, fragShader);
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragShader);
-
-    m_shaderProg = shaderProg;
+    // create shader program
+    m_shaderProg = std::make_shared<Shader>(
+        Lab2Shaders::sqrVertexShaderSrc, 
+        Lab2Shaders::sqrFragmentShaderSrc
+    );
 
     return 0;
 }
@@ -88,10 +47,16 @@ unsigned Lab2Application::Init()
 unsigned Lab2Application::Run() const 
 {
     Log::info("Lab2Application", "Starting application loop");
+    GLint selected = 0;
+    auto u_selected = m_shaderProg->GetUniformLocation("selected_vertex");
 
     while (!glfwWindowShouldClose(window)) 
     {
         glfwPollEvents();
+        
+        // update selected tile
+        selected = (9 * (selectionY % 8)) + (selectionX % 8);
+        glUniform1i(u_selected, selected);
 
         // clear window
         glClearColor(0.1f, 0.25f, 0.5f, 1.0f);
@@ -99,7 +64,7 @@ unsigned Lab2Application::Run() const
 
         // draw board
         m_vertArray->Bind();
-        glUseProgram(m_shaderProg);
+        m_shaderProg->Bind();
         glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         // display new frame
