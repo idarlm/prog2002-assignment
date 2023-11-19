@@ -14,12 +14,14 @@ public:
 	void Unbind() const;
 	void UploadUniformFloat2(const std::string& name, const glm::vec2& vector);
 
-private:
-	GLuint VertexShader;
-	GLuint FragmentShader;
-	GLuint ShaderProgram;
+	GLint GetUniformLocation(const GLchar* name);
 
-	void CompileShader(GLenum shaderType, const std::string& shaderSrc);
+private:
+	// I have decided to alter the implementation of this class
+	// to allow for easier cleanup in case of compilation failure.
+
+	GLuint ShaderProgram;
+	bool CompileShader(GLuint shader, const std::string& shaderSrc);
 };
 
 #endif // !SHADER_H_
