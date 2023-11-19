@@ -52,17 +52,16 @@ unsigned Lab3Application::Run() const
     GLint selected = 0;
     auto u_selected = m_shaderProg->GetUniformLocation("selected_vertex");
 
-    auto projectionMatrix = glm::perspective(45.f, 1.f, 1.f, -10.f);
-    auto viewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
+    auto projectionMatrix = glm::perspective(45.f, 480.f / 360.f, 0.1f, 10.f);
+    auto viewMatrix = glm::lookAt(glm::vec3(0.f, 2.f, 2.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
     auto modelMatrix = glm::mat4(1.f);
-    modelMatrix = glm::translate(modelMatrix, glm::vec3(0.f, 0.f, 0.f));
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(0.f), glm::vec3(0.f, 1.f, 0.f));
-    modelMatrix = glm::scale(modelMatrix, glm::vec3(2.f, 2.f, 1.f));
+    modelMatrix = glm::rotate(modelMatrix, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(2.f, 2.f, 2.f));
 
     while (!glfwWindowShouldClose(window)) 
     {
         glfwPollEvents();
-        
+
         // update selected tile
         selected = (9 * (selectionY % 8)) + (selectionX % 8);
         glUniform1i(u_selected, selected);
@@ -74,7 +73,9 @@ unsigned Lab3Application::Run() const
         // draw board
         m_vertArray->Bind();
         m_shaderProg->Bind();
-        m_shaderProg->UploadUniformMat4x4("transform", modelMatrix);
+        m_shaderProg->UploadUniformMat4x4("projection", projectionMatrix);
+        m_shaderProg->UploadUniformMat4x4("view", viewMatrix);
+        m_shaderProg->UploadUniformMat4x4("model", modelMatrix);
         glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         // display new frame

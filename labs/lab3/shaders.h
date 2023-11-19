@@ -10,12 +10,14 @@ namespace Lab3Shaders {
         layout(location = 0) in vec2 position;
 
         uniform int selected_vertex;
-        uniform mat4 transform;
+        uniform mat4 projection;
+        uniform mat4 view;
+        uniform mat4 model;
 
         flat out vec3 v_color;
         void main()
         {
-            gl_Position = transform * vec4(position, 0.0, 1.0);
+            gl_Position = projection * view * model * vec4(position, 0.0, 1.0);
             
             v_color = vec3(0.1, 0.1, 0.1);
             if(gl_VertexID % 2 == 0) {
