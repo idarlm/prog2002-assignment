@@ -8,7 +8,7 @@ Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
     if (!CompileShader(VertexShader, vertexSrc))
     {
         glDeleteShader(VertexShader);
-        throw std::exception("Failed to compile shader");
+        throw std::runtime_error("Failed to compile shader");
     }
 
     auto FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -16,7 +16,7 @@ Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
     {
         glDeleteShader(VertexShader);
         glDeleteShader(FragmentShader);
-        throw std::exception("Failed to compile shader");
+        throw std::runtime_error("Failed to compile shader");
     }
 
     ShaderProgram = glCreateProgram();
