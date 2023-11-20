@@ -104,7 +104,6 @@ namespace GeometricTools {
                 float x = -0.5f + (float)((pos + (pos/2)) % 2);
                 float z = -0.5f + (float)(pos / 2);
 
-                Log::info("UnitCube", "x = ", x, ", y = ", y, ", z =", z);
 
                 positions.push_back(x);
                 positions.push_back(y);
@@ -121,8 +120,8 @@ namespace GeometricTools {
         *-------*       |   *-------*
         |3/7 2/6|       |   |d     c|   where:  a = side
         |       |       |   |       |           b = (side + 1) % 4
-        |0/4 1/5|       |   |a     b|           c = 4 + side
-        *-------*       |   *-------*           d = 4 + b
+        |0/4 1/5|       |   |a     b|           c = 4 + b
+        *-------*       |   *-------*           d = 4 + side
                         |
         */
         std::vector<unsigned> indices = {};
@@ -148,8 +147,8 @@ namespace GeometricTools {
         {
             unsigned a = side;
             unsigned b = (a + 1) % 4;
-            unsigned c = 4 + a;
-            unsigned d = 4 + b;
+            unsigned c = 4 + b;
+            unsigned d = 4 + a;
         
             // upper left triangle
             indices.push_back(d);
