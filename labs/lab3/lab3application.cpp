@@ -4,7 +4,7 @@
 #include <ShaderDataTypes.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <RenderingCommands.h>
+#include <RenderCommands.h>
 #include "lab3application.h"
 #include "shaders.h"
 
