@@ -108,6 +108,7 @@ unsigned Lab3Application::Run() const
 
         // draw cube
         auto cubeModel = glm::mat4(1.f);
+        cubeModel = glm::translate(cubeModel, glm::vec3(0.f, 0.5f, 0.f));
         cubeModel = glm::rotate(cubeModel, -time, glm::vec3(0.f, 1.f, 0.f));
         m_cube->Bind();
         m_cubeShader->Bind();
