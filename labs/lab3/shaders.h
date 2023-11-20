@@ -50,11 +50,17 @@ namespace Lab3Shaders {
         uniform mat4 view;
         uniform mat4 model;
 
+        uniform int alt_color;
+
         flat out vec3 v_color;
         void main()
         {
             gl_Position = projection * view * model * vec4(position, 1.0);
-            v_color = vec3(1.0, 1.0, 1.0);
+            v_color = vec3(0.5, 0.0, 0.5);
+
+            if(alt_color == 1) {
+                v_color = vec3(1.0, 1.0, 1.0);
+            }
         }
     )";
 }

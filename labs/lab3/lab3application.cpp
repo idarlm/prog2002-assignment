@@ -115,7 +115,14 @@ unsigned Lab3Application::Run() const
         m_cubeShader->UploadUniformMat4x4("projection", projectionMatrix);
         m_cubeShader->UploadUniformMat4x4("view", viewMatrix);
         m_cubeShader->UploadUniformMat4x4("model", cubeModel);
+        auto loc = m_cubeShader->GetUniformLocation("alt_color");
+
         glDrawElements(GL_TRIANGLES, m_cube->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glUniform1i(loc, 1);
+        glDrawElements(GL_TRIANGLES, m_cube->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glUniform1i(loc, 0);
 
 
         // display new frame
