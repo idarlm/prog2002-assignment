@@ -83,6 +83,87 @@ namespace GeometricTools {
 
         return indices;
     }
+
+    const std::vector<float> UnitCubePositions() {
+        /* Cube face:
+        *-------* z  
+        |4     3| |_ x
+        |       | 
+        |1     2| Two such planes stacked vertically
+        *-------*
+        */
+        std::vector<float> positions = {};
+
+        for (int plane = 0; plane < 2; plane++) 
+        {
+            float y = -0.5f + (float)plane;
+
+            // calculate positions for each point
+            for (int pos = 0; pos < 4; pos++)
+            {
+                float x = -0.5f + (float)((pos + (pos/2)) % 2);
+                float z = -0.5f + (float)(pos / 2);
+
+                Log::info("UnitCube", "x = ", x, ", y = ", y, ", z =", z);
+
+                positions.push_back(x);
+                positions.push_back(y);
+                positions.push_back(z);
+            }
+        }
+
+        return positions;
+    }
+
+    const std::vector<unsigned> UnitCubeIndices() {
+        /*
+        bottom/top:     |   sides:
+        *-------*       |   *-------*
+        |3/7 2/6|       |   |d     c|   where:  a = side
+        |       |       |   |       |           b = (side + 1) % 4
+        |0/4 1/5|       |   |a     b|           c = 4 + side
+        *-------*       |   *-------*           d = 4 + b
+                        |
+        */
+        std::vector<unsigned> indices = {};
+
+        // bottom and top face
+        for (int plane = 0; plane < 2; plane++)
+        {
+            unsigned offset = plane * 4;
+        
+            // upper left triangle (ref. drawing)
+            indices.push_back(offset + 3);
+            indices.push_back(offset + 2);
+            indices.push_back(offset);
+        
+            // lower right triangle
+            indices.push_back(offset + 2);
+            indices.push_back(offset + 1);
+            indices.push_back(offset);
+        }
+
+        //sides
+        for (int side = 0; side < 4; side++)
+        {
+            unsigned a = side;
+            unsigned b = (a + 1) % 4;
+            unsigned c = 4 + a;
+            unsigned d = 4 + b;
+        
+            // upper left triangle
+            indices.push_back(d);
+            indices.push_back(c);
+            indices.push_back(a);
+        
+            // lower right triangle
+            indices.push_back(c);
+            indices.push_back(b);
+            indices.push_back(a);
+        }
+
+        return indices;
+    }
 }
 
 #endif
