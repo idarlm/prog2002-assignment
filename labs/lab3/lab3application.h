@@ -23,6 +23,9 @@ public:
 private:
 	std::shared_ptr<VertexArray> m_vertArray;
 	std::shared_ptr<Shader> m_shaderProg;
+
+	std::shared_ptr<VertexArray> m_cube;
+	std::shared_ptr<Shader> m_cubeShader;
 };
 
 #endif // LAB2APPLICATION_H_
