@@ -39,9 +39,23 @@ unsigned Lab3Application::Init()
 
     // create shader program
     m_shaderProg = std::make_shared<Shader>(
-        Lab3Shaders::sqrVertexShaderSrc, 
+        Lab3Shaders::sqrVertexShaderSrc,
         Lab3Shaders::sqrFragmentShaderSrc
     );
+
+    // create cube
+    m_cube = std::make_shared<VertexArray>();
+    auto v = GeometricTools::UnitCubePositions();
+    auto i = GeometricTools::UnitCubeIndices();
+
+    auto vb = std::make_shared<VertexBuffer>(v.data(), v.size() * sizeof(float));
+    vb->SetLayout(BufferLayout({ {ShaderDataType::Float3, "position"} }));
+    auto ib = std::make_shared<IndexBuffer>(i.data(), i.size());
+
+    m_cube->AddVertexBuffer(vb);
+    m_cube->SetIndexBuffer(ib);
+
+    m_cubeShader = std::make_shared<Shader>(Lab3Shaders::cubeVertShader, Lab3Shaders::sqrFragmentShaderSrc);
 
     return 0;
 }
@@ -72,10 +86,6 @@ unsigned Lab3Application::Run() const
         modelMatrix2 = glm::rotate(modelMatrix2, time, glm::vec3(0.f, 0.f, 1.f));
         modelMatrix2 = glm::scale(modelMatrix2, glm::vec3(2.f, 2.f, 2.f));
 
-        // update selected tile
-        selected = (9 * (selectionY % 8)) + (selectionX % 8);
-        glUniform1i(u_selected, selected);
-
         // clear window
         glClearColor(0.1f, 0.25f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -83,13 +93,37 @@ unsigned Lab3Application::Run() const
         // draw board
         m_vertArray->Bind();
         m_shaderProg->Bind();
+
+        // update selected tile
+        selected = (9 * (selectionY % 8)) + (selectionX % 8);
+        glUniform1i(u_selected, selected);
+
         m_shaderProg->UploadUniformMat4x4("projection", projectionMatrix);
         m_shaderProg->UploadUniformMat4x4("view", viewMatrix);
         m_shaderProg->UploadUniformMat4x4("model", modelMatrix);
-        glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 
         m_shaderProg->UploadUniformMat4x4("model", modelMatrix2);
-        glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+        //glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+
+        // draw cube
+        auto cubeModel = glm::mat4(1.f);
+        cubeModel = glm::translate(cubeModel, glm::vec3(0.f, 0.5f, 0.f));
+        cubeModel = glm::rotate(cubeModel, -time, glm::vec3(0.f, 1.f, 0.f));
+        m_cube->Bind();
+        m_cubeShader->Bind();
+        m_cubeShader->UploadUniformMat4x4("projection", projectionMatrix);
+        m_cubeShader->UploadUniformMat4x4("view", viewMatrix);
+        m_cubeShader->UploadUniformMat4x4("model", cubeModel);
+        auto loc = m_cubeShader->GetUniformLocation("alt_color");
+
+        glDrawElements(GL_TRIANGLES, m_cube->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glUniform1i(loc, 1);
+        glDrawElements(GL_TRIANGLES, m_cube->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glUniform1i(loc, 0);
+
 
         // display new frame
         glfwSwapBuffers(window);
