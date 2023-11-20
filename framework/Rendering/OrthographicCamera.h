@@ -22,7 +22,7 @@ public:
 
 public:
     OrthographicCamera(
-        const Frustrum& frustrum = { -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f },
+        const Frustrum& frustrum = { -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f },
         const glm::vec3& position = glm::vec3(0.0f), 
         float rotation = 0.0f
     );
@@ -43,6 +43,8 @@ public:
     {
         this->CameraFrustrum = frustrum; this->RecalculateMatrix();
     }
+
+    void SetAspectRatio(float ratio);
 
 protected:
     void RecalculateMatrix();
