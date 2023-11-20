@@ -4,6 +4,7 @@
 #include <ShaderDataTypes.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <RenderCommands.h>
 #include "lab3application.h"
 #include "shaders.h"
 
@@ -78,17 +79,9 @@ unsigned Lab3Application::Run() const
     {
         glfwPollEvents();
 
-        auto time = (float)glfwGetTime();
-        auto modelMatrix2 = glm::mat4(1.f);
-        modelMatrix2 = glm::translate(modelMatrix2, glm::vec3(0.f, 2.f * sin(time), 0.f));
-        modelMatrix2 = glm::translate(modelMatrix2, glm::vec3(0.f, -2.5f, 0.f));
-        modelMatrix2 = glm::rotate(modelMatrix2, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
-        modelMatrix2 = glm::rotate(modelMatrix2, time, glm::vec3(0.f, 0.f, 1.f));
-        modelMatrix2 = glm::scale(modelMatrix2, glm::vec3(2.f, 2.f, 2.f));
-
         // clear window
-        glClearColor(0.1f, 0.25f, 0.5f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        RenderCommands::SetClearColor(0.1f, 0.25f, 0.5f, 1.0f);
+        RenderCommands::Clear();
 
         // draw board
         m_vertArray->Bind();
@@ -101,12 +94,10 @@ unsigned Lab3Application::Run() const
         m_shaderProg->UploadUniformMat4x4("projection", projectionMatrix);
         m_shaderProg->UploadUniformMat4x4("view", viewMatrix);
         m_shaderProg->UploadUniformMat4x4("model", modelMatrix);
-        glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
-
-        m_shaderProg->UploadUniformMat4x4("model", modelMatrix2);
-        //glDrawElements(GL_TRIANGLES, m_vertArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+        RenderCommands::DrawIndex(m_vertArray);
 
         // draw cube
+        auto time = (float)glfwGetTime();
         auto cubeModel = glm::mat4(1.f);
         cubeModel = glm::translate(cubeModel, glm::vec3(0.f, 0.5f, 0.f));
         cubeModel = glm::rotate(cubeModel, -time, glm::vec3(0.f, 1.f, 0.f));
@@ -117,11 +108,11 @@ unsigned Lab3Application::Run() const
         m_cubeShader->UploadUniformMat4x4("model", cubeModel);
         auto loc = m_cubeShader->GetUniformLocation("alt_color");
 
-        glDrawElements(GL_TRIANGLES, m_cube->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        RenderCommands::DrawIndex(m_cube);
+        RenderCommands::SetWireframeMode();
         glUniform1i(loc, 1);
-        glDrawElements(GL_TRIANGLES, m_cube->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        RenderCommands::DrawIndex(m_cube);
+        RenderCommands::SetSolidMode();
         glUniform1i(loc, 0);
 
 
