@@ -12,13 +12,20 @@ class Input
 {
 private:
 	// Singleton
-	static Input* instance;
+	inline static Input* instance = nullptr;
+
+	// Constructor
+	// There are probably more contructors that 
+	// should be removed as well. 
+	Input() {};
 
 public:
-	// Constructor
-	Input();
-
 	// Static methods
+
+	/// <summary>
+	/// Get the Input instance
+	/// </summary>
+	static Input* GetInstance();
 
 	/// <summary>
 	/// 
@@ -42,7 +49,7 @@ public:
 	/// </summary>
 	static bool ButtonHeld(std::string name);
 
-private:
+public:
 	struct ButtonBinding
 	{
 		std::string name;
@@ -54,9 +61,6 @@ private:
 
 	// map to store all bindings
 	std::map<std::string, ButtonBinding> bindings = {};
-
-public:
-	std::map<std::string, ButtonBinding>& GetBindings() { return bindings; }
 };
 
 #endif // !INPUT_H_
