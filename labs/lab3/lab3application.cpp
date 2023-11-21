@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <RenderCommands.h>
+#include <TextureManager.h>
 #include "lab3application.h"
 #include "shaders.h"
 
@@ -23,11 +24,12 @@ unsigned Lab3Application::Init()
     m_vertArray = std::make_shared<VertexArray>();
 
     // create VBO
-    auto verts = GeometricTools::UnitGridGeometry2D(8, 8);
+    auto verts = GeometricTools::UnitGridGeometry2DWTCoords<8, 8>();
     auto vbuff = std::make_shared<VertexBuffer>(verts.data(), verts.size() * sizeof(float));
     vbuff->SetLayout(
         BufferLayout({
-            {ShaderDataType::Float2, "position"}
+            {ShaderDataType::Float2, "position"},
+            {ShaderDataType::Float2, "tex_coords"}
         })
     );
 
@@ -56,7 +58,13 @@ unsigned Lab3Application::Init()
     m_cube->AddVertexBuffer(vb);
     m_cube->SetIndexBuffer(ib);
 
-    m_cubeShader = std::make_shared<Shader>(Lab3Shaders::cubeVertShader, Lab3Shaders::sqrFragmentShaderSrc);
+    m_cubeShader = std::make_shared<Shader>(Lab3Shaders::cubeVertShader, Lab3Shaders::cubeFragShader);
+
+    auto tm = TextureManager::GetInstance();
+    if (!tm->LoadTexture2DRGBA(std::string("floor_texture.png"), std::string(TEXTURES_DIR), 0, false))
+        return 1;
+    if (!tm->LoadCubeMapRGBA(std::string("cube_texture.png"), std::string(TEXTURES_DIR), 1, false))
+        return 1;
 
     return 0;
 }
@@ -67,7 +75,7 @@ unsigned Lab3Application::Run() const
     GLint selected = 0;
     auto u_selected = m_shaderProg->GetUniformLocation("selected_vertex");
 
-    auto projectionMatrix = glm::perspective(45.f, 480.f / 360.f, 0.1f, 10.f);
+    auto projectionMatrix = glm::perspective(45.f, 1280.f / 720.f, 0.1f, 10.f);
     auto viewMatrix = glm::lookAt(glm::vec3(0.f, 2.f, 2.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
     auto modelMatrix = glm::mat4(1.f);
     modelMatrix = glm::rotate(modelMatrix, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));

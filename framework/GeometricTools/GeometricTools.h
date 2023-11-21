@@ -163,6 +163,39 @@ namespace GeometricTools {
 
         return indices;
     }
+
+    // Constexpr version that generates the geometry of the grid, including texture coordinates
+    // The shape of the generated data is PPTTPPTTPPTT..., meaning two components for position
+    // and two components for texture coordinates.
+    //
+    // Implemented using same algorithm as old UnitGridGeometry2D()
+    template<unsigned int X, unsigned int Y>
+    constexpr std::array<float, (X + 1)* (Y + 1)* (2 + 2)> UnitGridGeometry2DWTCoords()
+    {
+        std::array<float, (X + 1)* (Y + 1)* (2 + 2)> array = {};
+        int element = 0;
+
+        // calculate positions, working out way up one row at a time.
+        for (int i = 0; i < Y + 1; i++) {
+            // calculate y position for this row
+            float y = i * (1.f / (float)Y);
+
+            // calculate x positions for this row
+            for (int i = 0; i < X + 1; i++) {
+                float x = i * (1.f / (float)X);
+                // position data
+                array[element++] = x - 0.5f;
+                array[element++] = y - 0.5f;
+
+                // texture coords
+                array[element++] = x;
+                array[element++] = y;
+            }
+        }
+
+        return array;
+    }
+
 }
 
 #endif
