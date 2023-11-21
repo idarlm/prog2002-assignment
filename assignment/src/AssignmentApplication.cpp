@@ -64,6 +64,10 @@ unsigned AssignmentApplication::Run() const
 	// Use depth testing
 	EnableDepthTest();
 	SetClearColor(0.2f, 0.2f, 0.3f, 1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	bool showTextures = false;
 
 	// set up camera
 	auto camera = PerspectiveCamera();
@@ -137,15 +141,35 @@ unsigned AssignmentApplication::Run() const
 		camera.SetPosition(glm::vec3(sin(cameraRot), 1.0f, cos(cameraRot)));
 
 		// zoom camera
-		cameraZoom += dt * (Input::ButtonHeld("ZoomIn") ? 1.0f : 0.0f);
-		cameraZoom -= dt * (Input::ButtonHeld("ZoomOut") ? 1.0f : 0.0f);
+		cameraZoom -= dt * (Input::ButtonHeld("ZoomIn") ? 1.0f : 0.0f);
+		cameraZoom += dt * (Input::ButtonHeld("ZoomOut") ? 1.0f : 0.0f);
 		cameraZoom = clamp01(cameraZoom);
 		camera.SetFov(lerp(30.0f, 75.0f, cameraZoom));
 
 		// update all entities
+		showTextures ^= Input::ButtonDown("ToggleTextures");
 		for (auto& e : entities)
 		{
 			auto id = e->GetID();
+
+			// Update board
+			if (id == 32)
+			{
+				// update uniforms
+				auto s = e->GetShader();
+				s->Bind();
+				s->UploadUniformMat4x4("viewProjection", camera.GetViewProjectionMatrix());
+				s->UploadUniformMat4x4("model", e->GetMatrix());
+
+				auto loc = s->GetUniformLocation("selected_vertex");
+				glUniform1i(loc, x + (9 * y));
+
+				loc = s->GetUniformLocation("useTextures");
+				glUniform1i(loc, showTextures);
+
+				// draw
+				e->Update(dt);
+			}
 
 			// Update cubes
 			if (id != 32)
@@ -180,24 +204,12 @@ unsigned AssignmentApplication::Run() const
 				loc = s->GetUniformLocation("targeted");
 				glUniform1i(loc, board[targeted] == id);
 
+				loc = s->GetUniformLocation("useTextures");
+				glUniform1i(loc, showTextures);
+
 				// draw
 				if(pos != -1)
 					e->Update(dt);
-			}
-
-			// Update board
-			if (id == 32)
-			{
-				// update uniforms
-				auto s = e->GetShader();
-				s->Bind();
-				s->UploadUniformMat4x4("viewProjection", camera.GetViewProjectionMatrix());
-				s->UploadUniformMat4x4("model", e->GetMatrix());
-				auto loc = s->GetUniformLocation("selected_vertex");
-				glUniform1i(loc, x + (9 * y));
-
-				// draw
-				e->Update(dt);
 			}
 		}
 
