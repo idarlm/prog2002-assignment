@@ -2,7 +2,7 @@
 #define ASSIGNMENTAPPLICATION_H_
 
 #include <GLFWApplication.h>
-#include <vector>
+#include <list>
 #include <memory>
 #include "Entity.h"
 
@@ -13,7 +13,7 @@
 class AssignmentApplication : public GLFWApplication 
 {
 private:
-	std::vector<std::shared_ptr<Entity>> entities = {};
+	std::list<std::shared_ptr<Entity>> entities = {};
 
 public:
 	inline static int selected = 0;

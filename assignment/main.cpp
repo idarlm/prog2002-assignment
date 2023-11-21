@@ -45,6 +45,7 @@ int main()
 	// load textures
 	auto texMan = TextureManager::GetInstance();
 	texMan->LoadTexture2DRGBA(std::string("floor_texture.png"), TEXTURES_DIR, 0);
+	texMan->LoadCubeMapRGBA(std::string("cube_texture.png"), TEXTURES_DIR, 1);
 
 	// start application loop
 	app.Run();

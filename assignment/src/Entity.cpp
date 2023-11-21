@@ -22,7 +22,9 @@ void Entity::recalculateMatrix()
 {
 	matrix = mat4(1.f);
 	matrix = translate(matrix, position);
+
 	matrix = rotate(matrix, rotation, rotationAxis);
+
 	matrix = glm::scale(matrix, this->scale);
 }
 

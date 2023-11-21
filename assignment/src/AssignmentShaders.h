@@ -66,8 +66,7 @@ namespace Shaders
 
         layout(location = 0) in vec3 position;
 
-        uniform mat4 projection;
-        uniform mat4 view;
+        uniform mat4 viewProjection;
         uniform mat4 model;
 
         uniform int alt_color;
@@ -76,7 +75,7 @@ namespace Shaders
         out vec3 vs_position;
         void main()
         {
-            gl_Position = projection * view * model * vec4(position, 1.0);
+            gl_Position = viewProjection * model * vec4(position, 1.0);
             v_color = vec3(0.5, 0.0, 0.5);
             vs_position = position;
 
