@@ -67,7 +67,7 @@ namespace Shaders
         void main()
         {
             if(useTextures == 1){
-                color = vec4(v_color, 1.0) * texture(uTexture, vs_position);
+                color = vec4(v_color, 0.5) * texture(uTexture, vs_position);
             }
             else {
                 color = vec4(v_color, 0.5);

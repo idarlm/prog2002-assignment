@@ -64,6 +64,9 @@ unsigned AssignmentApplication::Run() const
 	// Use depth testing
 	EnableDepthTest();
 	SetClearColor(0.2f, 0.2f, 0.3f, 1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	bool showTextures = false;
 
 	// set up camera
@@ -149,6 +152,25 @@ unsigned AssignmentApplication::Run() const
 		{
 			auto id = e->GetID();
 
+			// Update board
+			if (id == 32)
+			{
+				// update uniforms
+				auto s = e->GetShader();
+				s->Bind();
+				s->UploadUniformMat4x4("viewProjection", camera.GetViewProjectionMatrix());
+				s->UploadUniformMat4x4("model", e->GetMatrix());
+
+				auto loc = s->GetUniformLocation("selected_vertex");
+				glUniform1i(loc, x + (9 * y));
+
+				loc = s->GetUniformLocation("useTextures");
+				glUniform1i(loc, showTextures);
+
+				// draw
+				e->Update(dt);
+			}
+
 			// Update cubes
 			if (id != 32)
 			{
@@ -188,25 +210,6 @@ unsigned AssignmentApplication::Run() const
 				// draw
 				if(pos != -1)
 					e->Update(dt);
-			}
-
-			// Update board
-			if (id == 32)
-			{
-				// update uniforms
-				auto s = e->GetShader();
-				s->Bind();
-				s->UploadUniformMat4x4("viewProjection", camera.GetViewProjectionMatrix());
-				s->UploadUniformMat4x4("model", e->GetMatrix());
-
-				auto loc = s->GetUniformLocation("selected_vertex");
-				glUniform1i(loc, x + (9 * y));
-
-				loc = s->GetUniformLocation("useTextures");
-				glUniform1i(loc, showTextures);
-
-				// draw
-				e->Update(dt);
 			}
 		}
 
