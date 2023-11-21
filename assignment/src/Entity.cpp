@@ -15,7 +15,7 @@ Entity::Entity(
 
 Entity::~Entity()
 {
-
+	--count;
 }
 
 void Entity::recalculateMatrix() 
