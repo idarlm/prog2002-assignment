@@ -21,7 +21,7 @@ private:
 	std::shared_ptr<VertexArray> vertexArray;
 	std::shared_ptr<Shader> shader;
 
-	glm::vec3 rotationAxis = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 rotationAxis = glm::vec3(1.0f, 0.0f, 0.0f);
 	float rotation = 0;
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);

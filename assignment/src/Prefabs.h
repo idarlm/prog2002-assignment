@@ -32,6 +32,25 @@ namespace Prefabs
 
 		return varr;
 	}
+
+	std::shared_ptr<VertexArray> MakeCube()
+	{
+		auto varr = std::make_shared<VertexArray>();
+
+		// board vertex data
+		auto bv = GeometricTools::UnitCubePositions();
+		auto vbuff = std::make_shared<VertexBuffer>(bv.data(), bv.size() * sizeof(float));
+		vbuff->SetLayout({ {ShaderDataType::Float3, "position"} });
+
+		// board indices
+		auto iv = GeometricTools::UnitCubeIndices();
+		auto ibuff = std::make_shared<IndexBuffer>(iv.data(), iv.size());
+
+		varr->AddVertexBuffer(vbuff);
+		varr->SetIndexBuffer(ibuff);
+
+		return varr;
+	}
 }
 
 #endif // !PREFABS_H_
