@@ -34,6 +34,7 @@ int main()
 	Input::BindButton("Right", GLFW_KEY_RIGHT);
 	Input::BindButton("Up", GLFW_KEY_UP);
 	Input::BindButton("Down", GLFW_KEY_DOWN);
+	Input::BindButton("Select", GLFW_KEY_ENTER);
 
 	// create glfw app
 	auto app = AssignmentApplication("v0.0.0");

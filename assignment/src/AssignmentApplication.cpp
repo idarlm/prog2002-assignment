@@ -57,6 +57,8 @@ unsigned AssignmentApplication::Run() const
 
 	// set up tile selector
 	unsigned x = 0, y = 0;
+	int selected = -1;
+	int selectedIndex = 0;
 
 	// logical representation of board
 	int board[8 * 8] = {-1};
@@ -89,6 +91,29 @@ unsigned AssignmentApplication::Run() const
 		Input::ButtonDown("Up")		&& y < 7 && ++y;
 		Input::ButtonDown("Down")	&& y > 0 && --y;
 
+		if (Input::ButtonDown("Select"))
+		{
+			auto index = x + (8 * y);
+			auto newSelection = board[index];
+
+			// move cube
+			if (newSelection == -1 && selected != newSelection)
+			{
+				board[index] = board[selectedIndex];
+				board[selectedIndex] = -1;
+			}
+
+			// remove selection when trying to select occupied space
+			if (newSelection != -1 && selected != -1)
+			{
+				newSelection = -1;
+			}
+
+			selected = newSelection;
+			selectedIndex = index;
+			Log::info("App", "Selected cube: ", selected);
+		}
+
 		// update all entities
 		for (auto& e : entities)
 		{
@@ -120,6 +145,9 @@ unsigned AssignmentApplication::Run() const
 
 				auto loc = s->GetUniformLocation("alt_color");
 				glUniform1i(loc, team);
+
+				loc = s->GetUniformLocation("selected");
+				glUniform1i(loc, selected == id);
 
 				// draw
 				if(pos != -1)
