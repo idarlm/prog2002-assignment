@@ -49,6 +49,8 @@ public:
 	/// </summary>
 	static bool ButtonHeld(std::string name);
 
+	static void ClearFlags();
+
 public:
 	struct ButtonBinding
 	{

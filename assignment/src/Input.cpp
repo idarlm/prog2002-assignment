@@ -55,3 +55,12 @@ bool Input::ButtonHeld(std::string name)
 
 	return b->second.held;
 }
+
+void Input::ClearFlags()
+{
+	for (auto& b : instance->bindings)
+	{
+		b.second.pressed = false;
+		b.second.released = false;
+	}
+}

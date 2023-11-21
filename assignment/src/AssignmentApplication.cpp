@@ -1,3 +1,4 @@
+#include <logger.h>
 #include <RenderCommands.h>
 #include <PerspectiveCamera.h>
 #include "AssignmentApplication.h"
@@ -36,19 +37,30 @@ unsigned AssignmentApplication::Run() const
 	EnableDepthTest();
 	SetClearColor(0.2f, 0.2f, 0.3f, 1.0f);
 
+	// set up camera
 	auto camera = PerspectiveCamera();
 	camera.SetPosition(glm::vec3(0.0f, 1.0f, 0.5f));
 	camera.SetAspectRatio(800.f / 600.f);
-	float time = 0.f;
 
+	// set up tile selector
+	unsigned x = 0, y = 0;
+	
+	float time = 0.f;
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwSetWindowShouldClose(window, Input::ButtonDown("Quit"));
+		Input::ClearFlags();
 		glfwPollEvents();
 		Clear();
 
 		float dt = glfwGetTime() - time;
 		time = glfwGetTime();
+
+		// update tile selector
+		Input::ButtonDown("Right")	&& x < 7 && ++x;
+		Input::ButtonDown("Left")	&& x > 0 && --x;
+		Input::ButtonDown("Up")		&& y < 7 && ++y;
+		Input::ButtonDown("Down")	&& y > 0 && --y;
 
 		// update all entities
 		for (auto& e : entities)
@@ -57,7 +69,7 @@ unsigned AssignmentApplication::Run() const
 			s->UploadUniformMat4x4("viewProjection", camera.GetViewProjectionMatrix());
 			s->UploadUniformMat4x4("model", e->GetMatrix());
 			auto loc = s->GetUniformLocation("selected_vertex");
-			glUniform1i(loc, 1);
+			glUniform1i(loc, x + (9 * y));
 			e->Update(dt);
 		}
 
