@@ -8,6 +8,19 @@
 
 using namespace RenderCommands;
 
+float lerp(float a, float b, float t)
+{
+	return a + (b - a) * t;
+}
+
+float clamp01(float t)
+{
+	if (t < 0.0f)
+		return 0.0f;
+	if (t > 1.0f)
+		return 1.0f;
+}
+
 AssignmentApplication::AssignmentApplication(std::string version)
 	: GLFWApplication("Assignment", version) {}
 
@@ -55,6 +68,7 @@ unsigned AssignmentApplication::Run() const
 	camera.SetPosition(glm::vec3(0.0f, 1.0f, 1.0f));
 	camera.SetAspectRatio(800.f / 600.f);
 	float cameraRot = 0.0f;
+	float cameraZoom = 0.5f;
 
 	// set up tile selector
 	unsigned x = 0, y = 0;
@@ -119,6 +133,12 @@ unsigned AssignmentApplication::Run() const
 		cameraRot -= dt * (Input::ButtonHeld("RotateRight") ? 1.0f : 0.0f);
 		cameraRot += dt * (Input::ButtonHeld("RotateLeft") ? 1.0f : 0.0f);
 		camera.SetPosition(glm::vec3(sin(cameraRot), 1.0f, cos(cameraRot)));
+
+		// zoom camera
+		cameraZoom += dt * (Input::ButtonHeld("ZoomIn") ? 1.0f : 0.0f);
+		cameraZoom -= dt * (Input::ButtonHeld("ZoomOut") ? 1.0f : 0.0f);
+		cameraZoom = clamp01(cameraZoom);
+		camera.SetFov(lerp(30.0f, 75.0f, cameraZoom));
 
 		// update all entities
 		for (auto& e : entities)

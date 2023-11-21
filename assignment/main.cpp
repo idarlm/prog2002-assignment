@@ -37,6 +37,8 @@ int main()
 	Input::BindButton("Select", GLFW_KEY_ENTER);
 	Input::BindButton("RotateLeft", GLFW_KEY_L);
 	Input::BindButton("RotateRight", GLFW_KEY_H);
+	Input::BindButton("ZoomIn", GLFW_KEY_P);
+	Input::BindButton("ZoomOut", GLFW_KEY_O);
 
 	// create glfw app
 	auto app = AssignmentApplication("v0.0.0");
