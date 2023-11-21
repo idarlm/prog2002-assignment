@@ -40,7 +40,7 @@ unsigned GLFWApplication::Init() {
     // window creation
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    window = glfwCreateWindow(480, 360, "Test window", NULL, NULL);
+    window = glfwCreateWindow(1280, 720, "Test window", NULL, NULL);
 
     if(!window)
     {

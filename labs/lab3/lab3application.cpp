@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <RenderCommands.h>
+#include <stb_image.h>
 #include "lab3application.h"
 #include "shaders.h"
 
@@ -23,11 +24,12 @@ unsigned Lab3Application::Init()
     m_vertArray = std::make_shared<VertexArray>();
 
     // create VBO
-    auto verts = GeometricTools::UnitGridGeometry2D(8, 8);
+    auto verts = GeometricTools::UnitGridGeometry2DWTCoords<8, 8>();
     auto vbuff = std::make_shared<VertexBuffer>(verts.data(), verts.size() * sizeof(float));
     vbuff->SetLayout(
         BufferLayout({
-            {ShaderDataType::Float2, "position"}
+            {ShaderDataType::Float2, "position"},
+            {ShaderDataType::Float2, "tex_coords"}
         })
     );
 
@@ -56,7 +58,36 @@ unsigned Lab3Application::Init()
     m_cube->AddVertexBuffer(vb);
     m_cube->SetIndexBuffer(ib);
 
-    m_cubeShader = std::make_shared<Shader>(Lab3Shaders::cubeVertShader, Lab3Shaders::sqrFragmentShaderSrc);
+    m_cubeShader = std::make_shared<Shader>(Lab3Shaders::cubeVertShader, Lab3Shaders::cubeFragShader);
+
+    // load image
+    auto filepath = std::string(TEXTURES_DIR) + std::string("floor_texture.png");
+    int width, height, bpp;
+    auto pixels = stbi_load(filepath.c_str(), &width, &height, &bpp, STBI_rgb_alpha);
+    if (!pixels)
+    {
+        Log::error("Lab3", "Failed to load texture: ", filepath);
+        return 1;
+    }
+    Log::info("Lab3", "Image loaded successfully! (", width, "x", height, "px)");
+
+    GLuint tex;
+    glGenTextures(1, &tex);
+
+    GLuint slot = 0;
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_2D, tex);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+    //Wrapping
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    //Filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    stbi_image_free(pixels);
 
     return 0;
 }
@@ -67,7 +98,7 @@ unsigned Lab3Application::Run() const
     GLint selected = 0;
     auto u_selected = m_shaderProg->GetUniformLocation("selected_vertex");
 
-    auto projectionMatrix = glm::perspective(45.f, 480.f / 360.f, 0.1f, 10.f);
+    auto projectionMatrix = glm::perspective(45.f, 1280.f / 720.f, 0.1f, 10.f);
     auto viewMatrix = glm::lookAt(glm::vec3(0.f, 2.f, 2.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
     auto modelMatrix = glm::mat4(1.f);
     modelMatrix = glm::rotate(modelMatrix, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
