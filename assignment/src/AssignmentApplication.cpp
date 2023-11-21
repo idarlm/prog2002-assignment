@@ -137,8 +137,8 @@ unsigned AssignmentApplication::Run() const
 		camera.SetPosition(glm::vec3(sin(cameraRot), 1.0f, cos(cameraRot)));
 
 		// zoom camera
-		cameraZoom += dt * (Input::ButtonHeld("ZoomIn") ? 1.0f : 0.0f);
-		cameraZoom -= dt * (Input::ButtonHeld("ZoomOut") ? 1.0f : 0.0f);
+		cameraZoom -= dt * (Input::ButtonHeld("ZoomIn") ? 1.0f : 0.0f);
+		cameraZoom += dt * (Input::ButtonHeld("ZoomOut") ? 1.0f : 0.0f);
 		cameraZoom = clamp01(cameraZoom);
 		camera.SetFov(lerp(30.0f, 75.0f, cameraZoom));
 
