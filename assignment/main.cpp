@@ -31,6 +31,10 @@ int main()
 	// set up input manager
 	input = Input::GetInstance();
 	Input::BindButton("Quit", GLFW_KEY_Q);
+	Input::BindButton("Left", GLFW_KEY_LEFT);
+	Input::BindButton("Right", GLFW_KEY_RIGHT);
+	Input::BindButton("Up", GLFW_KEY_UP);
+	Input::BindButton("Down", GLFW_KEY_DOWN);
 
 	// create glfw app
 	auto app = AssignmentApplication("v0.0.0");
