@@ -22,6 +22,4 @@ add_custom_command(
 target_compile_definitions(
 	lab3 PRIVATE
 	TEXTURES_DIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/textures/"
-	STB_IMAGE_IMPLEMENTATION
-	STB_IMAGE_STATIC
 )

@@ -1,11 +1,10 @@
 // This is the TextureManager.cpp
 #include "TextureManager.h"
-
-#include <iostream>
+#include <logger.h>
 
 TextureManager::~TextureManager()
 {
-    for (auto t : Textures)
+    for (auto& t : Textures)
     {
         GLuint tex = GL_TEXTURE0 + t.unit;
         glDeleteTextures(1, &tex);
@@ -15,12 +14,14 @@ TextureManager::~TextureManager()
 bool TextureManager::LoadTexture2DRGBA(const std::string& name, const std::string& filePath, GLuint unit, bool mipMap)
 {
     int width, height, bpp;
-    auto data = this->LoadTextureImage(filePath, width, height, bpp, STBI_rgb_alpha);
+    auto data = this->LoadTextureImage(filePath + name, width, height, bpp, STBI_rgb_alpha);
 
     if (!data)
     {
+        Log::error("TextureManager", "Failed to load image: ", filePath, name);
         return false;
     }
+    Log::error("TextureManager", "Successfully loaded image: ", filePath, name, " (", width, "x", height, ")");
 
     GLuint tex;
     glGenTextures(1, &tex);
@@ -59,12 +60,14 @@ bool TextureManager::LoadTexture2DRGBA(const std::string& name, const std::strin
 bool TextureManager::LoadCubeMapRGBA(const std::string& name, const std::string& filePath, GLuint unit, bool mipMap)
 {
     int width, height, bpp;
-    auto data = this->LoadTextureImage(filePath, width, height, bpp, STBI_rgb_alpha);
+    auto data = this->LoadTextureImage(filePath + name, width, height, bpp, STBI_rgb_alpha);
 
     if (!data)
     {
+        Log::error("TextureManager", "Failed to load image: ", filePath, name);
         return false;
     }
+    Log::error("TextureManager", "Successfully loaded image: ", filePath, name, " (", width, "x", height, ")");
 
     /*Generate a texture object and upload the loaded image to it.*/
     GLuint tex;

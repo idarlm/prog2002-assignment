@@ -3,3 +3,9 @@ add_library(Framework::Rendering ALIAS Rendering)
 
 target_link_libraries(Rendering PUBLIC glad glm stb Framework::Logger)
 target_include_directories(GLFWApplication PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+
+target_compile_definitions(
+	Rendering PRIVATE
+	STB_IMAGE_IMPLEMENTATION
+	STB_IMAGE_STATIC
+)
