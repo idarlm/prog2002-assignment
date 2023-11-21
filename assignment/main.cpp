@@ -15,8 +15,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		}
 
 		// set held
-		b.second.held |= action == GLFW_PRESS;
-		b.second.held &= action != GLFW_RELEASE;
+		b.second.held = (bool)action;
 
 		// set pressed
 		b.second.pressed = action == GLFW_PRESS;
