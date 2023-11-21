@@ -19,6 +19,8 @@ inline float clamp01(float t)
 		return 0.0f;
 	if (t > 1.0f)
 		return 1.0f;
+
+	return t;
 }
 
 AssignmentApplication::AssignmentApplication(std::string version)
