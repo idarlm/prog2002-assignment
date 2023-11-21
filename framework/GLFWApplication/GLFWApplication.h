@@ -1,9 +1,8 @@
 #ifndef GLFWAPPLICATION_H_
 #define GLFWAPPLICATION_H_
 
-#include <iostream>
+#include <string>
 #include <GLFW/glfw3.h>
-#include <memory>
 
 class GLFWApplication {
 protected:
