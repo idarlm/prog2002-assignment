@@ -18,6 +18,7 @@ namespace RenderCommands
 
     inline void DrawIndex(const std::shared_ptr<VertexArray>& vao, GLenum primitive = GL_TRIANGLES)
     {
+        vao->Bind();
         glDrawElements(primitive, vao->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
     }
 
@@ -34,6 +35,16 @@ namespace RenderCommands
     inline void SetSolidMode()
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
+    inline void EnableDepthTest()
+    {
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    inline void DisableDepthTest()
+    {
+        glDisable(GL_DEPTH_TEST);
     }
 }
 

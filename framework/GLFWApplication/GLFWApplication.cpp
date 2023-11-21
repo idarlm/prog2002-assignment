@@ -11,8 +11,6 @@ GLFWApplication::GLFWApplication(std::string name, std::string version)
  * Destroy window and perform additional cleanup.
 */
 GLFWApplication::~GLFWApplication() {
-    Log::info("GLFWApplication", "Destroying window...");
-
     glfwDestroyWindow(window);
 
     Log::info("GLFWApplication", "Goodbye!");
@@ -38,9 +36,11 @@ unsigned GLFWApplication::Init() {
     );
 
     // window creation
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    window = glfwCreateWindow(1280, 720, "Test window", NULL, NULL);
+    Log::info("GLFWApplication", "OpenGL version: ", glVersionMajor, ".", glVersionMinor);
+    Log::info("GLFWApplication", "Window size: ", width, "x", height);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
+    window = glfwCreateWindow(width, height, (name + " (" + version + ")").c_str(), NULL, NULL);
 
     if(!window)
     {
@@ -76,6 +76,7 @@ unsigned GLFWApplication::Init() {
     );
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
+    // OpenGL debug info
     Log::info("OpenGL", "Vendor: ", glGetString(GL_VENDOR));
     Log::info("OpenGL", "Renderer: ", glGetString(GL_RENDERER));
     Log::info("OpenGL", "OpenGL version: ", glGetString(GL_VERSION));
