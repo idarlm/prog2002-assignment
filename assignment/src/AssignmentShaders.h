@@ -38,12 +38,19 @@ namespace Shaders
         
         layout(binding = 0) uniform sampler2D u_floorTexSampler;
 
+        uniform int useTextures = 0;
+
         flat in vec3 v_color;
         in vec2 vs_tcoords;
         out vec4 color;
         void main()
         {
-            color = vec4(v_color, 0.0) * texture(u_floorTexSampler, vs_tcoords);
+            if(useTextures == 1){
+                color = mix(vec4(v_color, 1.0), texture(u_floorTexSampler, vs_tcoords), 0.75);
+            }
+            else {
+                color = vec4(v_color, 1.0);
+            }
         }
     )";
 
@@ -52,12 +59,19 @@ namespace Shaders
         
         layout(binding = 1) uniform samplerCube uTexture;
 
+        uniform int useTextures = 0;
+
         flat in vec3 v_color;
         in vec3 vs_position;
         out vec4 color;
         void main()
         {
-            color = vec4(v_color, 1.0) * texture(uTexture, vs_position);
+            if(useTextures == 1){
+                color = vec4(v_color, 1.0) * texture(uTexture, vs_position);
+            }
+            else {
+                color = vec4(v_color, 0.5);
+            }
         }
     )";
 
@@ -82,7 +96,7 @@ namespace Shaders
             vs_position = position;
 
             if(alt_color == 1) {
-                v_color = vec3(1.0, 1.0, 1.0);
+                v_color = vec3(0.2, 0.7, 0.2);
             }
 
             if(targeted == 1) {
