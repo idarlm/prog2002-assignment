@@ -3,13 +3,21 @@
 
 #include <iostream>
 #include <GLFW/glfw3.h>
+#include <memory>
 
 class GLFWApplication {
 protected:
     std::string name = "";
     std::string version = "";
 
+    int glVersionMajor = 4;
+    int glVersionMinor = 3;
+
+    int width = 1280;
+    int height = 720;
+
     GLFWwindow* window;
+
 public:
     //constructor / destructor
     GLFWApplication(std::string name, std::string version);
@@ -18,8 +26,30 @@ public:
     virtual unsigned Init();
     virtual unsigned Run() const = 0;
 
-    inline std::string getName() { return name; }
-    inline std::string getVersion() { return version; }
+    std::string getName() { return name; }
+    std::string getVersion() { return version; }
+
+    int getWidth() { return width; }
+    int getHeight() { return height; }
+    float getAspectRatio() { return (float)width / float(height); }
+
+    void setTitle(std::string name, std::string version = "v1.0.0")
+    {
+        this->name = name;
+        this->version = version;
+    }
+
+    void setSize(int width, int height)
+    {
+        this->width = width;
+        this->height = height;
+    }
+
+    void setGlVersion(int major, int minor)
+    {
+        this->glVersionMajor = major;
+        this->glVersionMinor = minor;
+    }
 
     GLFWwindow* getWindow() const { return window; }
 
