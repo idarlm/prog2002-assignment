@@ -60,34 +60,8 @@ unsigned Lab3Application::Init()
 
     m_cubeShader = std::make_shared<Shader>(Lab3Shaders::cubeVertShader, Lab3Shaders::cubeFragShader);
 
-    // load image
-    auto filepath = std::string(TEXTURES_DIR) + std::string("floor_texture.png");
-    int width, height, bpp;
-    auto pixels = stbi_load(filepath.c_str(), &width, &height, &bpp, STBI_rgb_alpha);
-    if (!pixels)
-    {
-        Log::error("Lab3", "Failed to load texture: ", filepath);
-        return 1;
-    }
-    Log::info("Lab3", "Image loaded successfully! (", width, "x", height, "px)");
-
-    GLuint tex;
-    glGenTextures(1, &tex);
-
-    GLuint slot = 0;
-    glActiveTexture(GL_TEXTURE0 + slot);
-    glBindTexture(GL_TEXTURE_2D, tex);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-    //Wrapping
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    //Filtering
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    stbi_image_free(pixels);
+    LoadImage(std::string("floor_texture.png"), 0);
+    LoadCubemap(std::string("cube_texture.png"), 1);
 
     return 0;
 }
@@ -152,4 +126,69 @@ unsigned Lab3Application::Run() const
     }
 
     return 0;
+}
+
+void Lab3Application::LoadImage(std::string& name, GLuint slot)
+{
+    // load image
+    auto filepath = std::string(TEXTURES_DIR) + name;
+    int width, height, bpp;
+    auto pixels = stbi_load(filepath.c_str(), &width, &height, &bpp, STBI_rgb_alpha);
+    if (!pixels)
+    {
+        Log::error("Lab3", "Failed to load texture: ", filepath);
+        throw std::runtime_error("Failed to load image");
+    }
+    Log::info("Lab3", "Image loaded successfully! (", width, "x", height, "px)");
+
+    GLuint tex;
+    glGenTextures(1, &tex);
+
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_2D, tex);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+    //Wrapping
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    //Filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    stbi_image_free(pixels);
+}
+
+void Lab3Application::LoadCubemap(std::string& name, GLuint slot)
+{
+    // load image
+    auto filepath = std::string(TEXTURES_DIR) + name;
+    int width, height, bpp;
+    auto pixels = stbi_load(filepath.c_str(), &width, &height, &bpp, STBI_rgb_alpha);
+    if (!pixels)
+    {
+        Log::error("Lab3", "Failed to load texture: ", filepath);
+        throw std::runtime_error("Failed to load image");
+    }
+    Log::info("Lab3", "Image loaded successfully! (", width, "x", height, "px)");
+
+    GLuint tex;
+    glGenTextures(1, &tex);
+
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, tex);
+
+    for (unsigned int i = 0; i < 6; i++) {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    }
+
+    //Wrapping
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_REPEAT);
+    //Filtering
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    stbi_image_free(pixels);
 }

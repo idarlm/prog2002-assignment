@@ -17,6 +17,9 @@ public:
 	// start application loop
 	unsigned Run() const override;
 
+	void LoadImage(std::string& name, GLuint slot);
+	void LoadCubemap(std::string& name, GLuint slot);
+
 	GLuint selectionX = 0;
 	GLuint selectionY = 0;
 

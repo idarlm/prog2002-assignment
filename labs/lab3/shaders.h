@@ -50,11 +50,14 @@ namespace Lab3Shaders {
     const std::string cubeFragShader = R"(
         #version 430 core
         
+        layout(binding = 1) uniform samplerCube uTexture;
+
         flat in vec3 v_color;
+        in vec3 vs_position;
         out vec4 color;
         void main()
         {
-            color = vec4(v_color, 1.0);
+            color = vec4(v_color, 1.0) * texture(uTexture, vs_position);
         }
     )";
 
@@ -70,10 +73,12 @@ namespace Lab3Shaders {
         uniform int alt_color;
 
         flat out vec3 v_color;
+        out vec3 vs_position;
         void main()
         {
             gl_Position = projection * view * model * vec4(position, 1.0);
             v_color = vec3(0.5, 0.0, 0.5);
+            vs_position = position;
 
             if(alt_color == 1) {
                 v_color = vec3(1.0, 1.0, 1.0);
