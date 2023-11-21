@@ -35,6 +35,16 @@ namespace RenderCommands
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
+
+    inline void EnableDepthTest()
+    {
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    inline void DisableDepthTest()
+    {
+        glDisable(GL_DEPTH_TEST);
+    }
 }
 
 

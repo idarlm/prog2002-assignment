@@ -1,4 +1,4 @@
-add_library(AssignmentSrc STATIC "AssignmentApplication.h" "AssignmentApplication.cpp")
+add_library(AssignmentSrc STATIC "AssignmentApplication.h" "AssignmentApplication.cpp" "Entity.h")
 
 target_link_libraries(
 	AssignmentSrc PUBLIC 
