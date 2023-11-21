@@ -21,7 +21,7 @@ bool TextureManager::LoadTexture2DRGBA(const std::string& name, const std::strin
         Log::error("TextureManager", "Failed to load image: ", filePath, name);
         return false;
     }
-    Log::error("TextureManager", "Successfully loaded image: ", filePath, name, " (", width, "x", height, ")");
+    Log::info("TextureManager", "Successfully loaded image: ", filePath, name, " (", width, "x", height, ")");
 
     GLuint tex;
     glGenTextures(1, &tex);
@@ -67,7 +67,7 @@ bool TextureManager::LoadCubeMapRGBA(const std::string& name, const std::string&
         Log::error("TextureManager", "Failed to load image: ", filePath, name);
         return false;
     }
-    Log::error("TextureManager", "Successfully loaded image: ", filePath, name, " (", width, "x", height, ")");
+    Log::info("TextureManager", "Successfully loaded image: ", filePath, name, " (", width, "x", height, ")");
 
     /*Generate a texture object and upload the loaded image to it.*/
     GLuint tex;

@@ -1,4 +1,5 @@
 #include <logger.h>
+#include <TextureManager.h>
 #include "src/AssignmentApplication.h"
 #include "src/Input.h"
 
@@ -37,6 +38,10 @@ int main()
 	app.setSize(800, 600);
 	app.Init();
 	glfwSetKeyCallback(app.getWindow(), keyCallback);
+
+	// load textures
+	auto texMan = TextureManager::GetInstance();
+	texMan->LoadTexture2DRGBA(std::string("floor_texture.png"), TEXTURES_DIR, 0);
 
 	// start application loop
 	app.Run();
