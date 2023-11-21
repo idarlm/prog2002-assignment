@@ -8,6 +8,21 @@
 
 using namespace RenderCommands;
 
+inline float lerp(float a, float b, float t)
+{
+	return a + (b - a) * t;
+}
+
+inline float clamp01(float t)
+{
+	if (t < 0.0f)
+		return 0.0f;
+	if (t > 1.0f)
+		return 1.0f;
+
+	return t;
+}
+
 AssignmentApplication::AssignmentApplication(std::string version)
 	: GLFWApplication("Assignment", version) {}
 
@@ -54,6 +69,8 @@ unsigned AssignmentApplication::Run() const
 	auto camera = PerspectiveCamera();
 	camera.SetPosition(glm::vec3(0.0f, 1.0f, 1.0f));
 	camera.SetAspectRatio(800.f / 600.f);
+	float cameraRot = 0.0f;
+	float cameraZoom = 0.5f;
 
 	// set up tile selector
 	unsigned x = 0, y = 0;
@@ -90,16 +107,16 @@ unsigned AssignmentApplication::Run() const
 		Input::ButtonDown("Left")	&& x > 0 && --x;
 		Input::ButtonDown("Up")		&& y < 7 && ++y;
 		Input::ButtonDown("Down")	&& y > 0 && --y;
+		int targeted = x + (8 * y);
 
 		if (Input::ButtonDown("Select"))
 		{
-			auto index = x + (8 * y);
-			auto newSelection = board[index];
+			auto newSelection = board[targeted];
 
 			// move cube
 			if (newSelection == -1 && selected != newSelection)
 			{
-				board[index] = board[selectedIndex];
+				board[targeted] = board[selectedIndex];
 				board[selectedIndex] = -1;
 			}
 
@@ -110,9 +127,20 @@ unsigned AssignmentApplication::Run() const
 			}
 
 			selected = newSelection;
-			selectedIndex = index;
+			selectedIndex = targeted;
 			Log::info("App", "Selected cube: ", selected);
 		}
+
+		// rotate camera
+		cameraRot -= dt * (Input::ButtonHeld("RotateRight") ? 1.0f : 0.0f);
+		cameraRot += dt * (Input::ButtonHeld("RotateLeft") ? 1.0f : 0.0f);
+		camera.SetPosition(glm::vec3(sin(cameraRot), 1.0f, cos(cameraRot)));
+
+		// zoom camera
+		cameraZoom += dt * (Input::ButtonHeld("ZoomIn") ? 1.0f : 0.0f);
+		cameraZoom -= dt * (Input::ButtonHeld("ZoomOut") ? 1.0f : 0.0f);
+		cameraZoom = clamp01(cameraZoom);
+		camera.SetFov(lerp(30.0f, 75.0f, cameraZoom));
 
 		// update all entities
 		for (auto& e : entities)
@@ -148,6 +176,9 @@ unsigned AssignmentApplication::Run() const
 
 				loc = s->GetUniformLocation("selected");
 				glUniform1i(loc, selected == id);
+
+				loc = s->GetUniformLocation("targeted");
+				glUniform1i(loc, board[targeted] == id);
 
 				// draw
 				if(pos != -1)

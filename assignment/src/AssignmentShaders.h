@@ -70,6 +70,7 @@ namespace Shaders
         uniform mat4 model;
 
         uniform int alt_color;
+        uniform int targeted;
         uniform int selected;
 
         flat out vec3 v_color;
@@ -82,6 +83,10 @@ namespace Shaders
 
             if(alt_color == 1) {
                 v_color = vec3(1.0, 1.0, 1.0);
+            }
+
+            if(targeted == 1) {
+                v_color = vec3(0.9, 0.5, 0.1);
             }
 
             if(selected == 1) {

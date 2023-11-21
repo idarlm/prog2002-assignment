@@ -50,6 +50,11 @@ public:
         this->CameraFrustrum.width = ratio; this->RecalculateMatrix();
     }
 
+    void SetFov(float degrees)
+    {
+        this->CameraFrustrum.angle = degrees;
+    }
+
 protected:
     void RecalculateMatrix();
 
