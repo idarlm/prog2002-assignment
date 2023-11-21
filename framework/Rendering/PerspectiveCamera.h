@@ -18,9 +18,9 @@ public:
     };
 
 public:
-    PerspectiveCamera(const Frustrum& frustrum = { 45.0f, -1.0f, 1.0f, 1.0f, -1.0f },
+    PerspectiveCamera(const Frustrum& frustrum = { 45.0f, 1.0f, 1.0f, 0.1f, 5.0f },
         const glm::vec3& position = glm::vec3(0.0f),
-        const glm::vec3& lookAt = glm::vec3(-1.0f),
+        const glm::vec3& lookAt = glm::vec3(0.0f),
         const glm::vec3& upVector = glm::vec3(0.0f, 1.0f, 0.0f));
     ~PerspectiveCamera() = default;
     PerspectiveCamera(const PerspectiveCamera& camera) : Camera(camera)
@@ -43,6 +43,11 @@ public:
     void SetUpVector(const glm::vec3& upVector)
     {
         this->UpVector = upVector; this->RecalculateMatrix();
+    }
+
+    void SetAspectRatio(float ratio)
+    {
+        this->CameraFrustrum.width = ratio; this->RecalculateMatrix();
     }
 
 protected:
