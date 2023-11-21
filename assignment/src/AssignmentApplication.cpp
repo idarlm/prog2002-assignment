@@ -54,6 +54,7 @@ unsigned AssignmentApplication::Run() const
 	auto camera = PerspectiveCamera();
 	camera.SetPosition(glm::vec3(0.0f, 1.0f, 1.0f));
 	camera.SetAspectRatio(800.f / 600.f);
+	float cameraRot = 0.0f;
 
 	// set up tile selector
 	unsigned x = 0, y = 0;
@@ -90,16 +91,16 @@ unsigned AssignmentApplication::Run() const
 		Input::ButtonDown("Left")	&& x > 0 && --x;
 		Input::ButtonDown("Up")		&& y < 7 && ++y;
 		Input::ButtonDown("Down")	&& y > 0 && --y;
+		int targeted = x + (8 * y);
 
 		if (Input::ButtonDown("Select"))
 		{
-			auto index = x + (8 * y);
-			auto newSelection = board[index];
+			auto newSelection = board[targeted];
 
 			// move cube
 			if (newSelection == -1 && selected != newSelection)
 			{
-				board[index] = board[selectedIndex];
+				board[targeted] = board[selectedIndex];
 				board[selectedIndex] = -1;
 			}
 
@@ -110,9 +111,14 @@ unsigned AssignmentApplication::Run() const
 			}
 
 			selected = newSelection;
-			selectedIndex = index;
+			selectedIndex = targeted;
 			Log::info("App", "Selected cube: ", selected);
 		}
+
+		// rotate camera
+		cameraRot -= dt * (Input::ButtonHeld("RotateRight") ? 1.0f : 0.0f);
+		cameraRot += dt * (Input::ButtonHeld("RotateLeft") ? 1.0f : 0.0f);
+		camera.SetPosition(glm::vec3(sin(cameraRot), 1.0f, cos(cameraRot)));
 
 		// update all entities
 		for (auto& e : entities)
@@ -148,6 +154,9 @@ unsigned AssignmentApplication::Run() const
 
 				loc = s->GetUniformLocation("selected");
 				glUniform1i(loc, selected == id);
+
+				loc = s->GetUniformLocation("targeted");
+				glUniform1i(loc, board[targeted] == id);
 
 				// draw
 				if(pos != -1)
