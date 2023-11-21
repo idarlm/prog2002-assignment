@@ -1,5 +1,6 @@
 #include <RenderCommands.h>
 #include "AssignmentApplication.h"
+#include "Input.h"
 
 using namespace RenderCommands;
 
@@ -25,6 +26,8 @@ unsigned AssignmentApplication::Run() const
 	{
 		glfwPollEvents();
 		Clear();
+
+		glfwSetWindowShouldClose(window, Input::ButtonDown("Quit"));
 
 		// update all entities
 		for (auto e : entities)
