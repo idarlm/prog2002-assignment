@@ -50,9 +50,9 @@ public:
         this->CameraFrustrum.width = ratio; this->RecalculateMatrix();
     }
 
-    void SetFov(float fov)
+    void SetFov(float degrees)
     {
-        this->CameraFrustrum.angle = glm::radians(fov);
+        this->CameraFrustrum.angle = degrees;
     }
 
 protected:

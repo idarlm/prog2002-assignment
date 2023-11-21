@@ -16,7 +16,7 @@ PerspectiveCamera::PerspectiveCamera(
 void PerspectiveCamera::RecalculateMatrix()
 {
 	ProjectionMatrix = glm::perspective(
-		CameraFrustrum.angle,
+		glm::radians(CameraFrustrum.angle),
 		CameraFrustrum.width / CameraFrustrum.height,
 		CameraFrustrum.near,
 		CameraFrustrum.far
