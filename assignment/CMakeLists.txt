@@ -1,8 +1,11 @@
+# subdirectory containing application specific code
+add_subdirectory(src)
+
 # executable
 add_executable(assignment main.cpp)
 
 # link libraries
-target_link_libraries(assignment PRIVATE glad glfw stb Framework::GLFWApplication Framework::Logger Framework::Rendering Framework::GeometricTools)
+target_link_libraries(assignment PRIVATE AssignmentSrc)
 
 # custom commands for copying images
 add_custom_command(
