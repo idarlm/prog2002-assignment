@@ -1,4 +1,5 @@
 #include <logger.h>
+#include <RenderCommands.h>
 #include "Entity.h"
 
 Entity::Entity(
@@ -23,7 +24,13 @@ void Entity::recalculateMatrix()
 	Log::error("Entity", "recalculateMatrix() not implemented");
 }
 
-static std::shared_ptr<Entity> MakeEntity(
+void Entity::Update(float dt)
+{
+	shader->Bind();	
+	RenderCommands::DrawIndex(vertexArray);
+}
+
+std::shared_ptr<Entity> Entity::MakeEntity(
 	std::shared_ptr<VertexBuffer> vertexBuffer,
 	std::shared_ptr<IndexBuffer> indexBuffer,
 	std::shared_ptr<Shader> shader)

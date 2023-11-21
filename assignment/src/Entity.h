@@ -6,7 +6,6 @@
 #include <VertexArray.h>
 #include <VertexBuffer.h>
 #include <IndexBuffer.h>
-#include <RenderCommands.h>
 #include <memory>
 
 /// <summary>
@@ -33,6 +32,9 @@ public:
 	// constructor and destructor
 	Entity(std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer, std::shared_ptr<Shader>);
 	~Entity();
+
+	// update renders the entity
+	void Update(float dt);
 
 	// getters and setters
 	void SetPosition(glm::vec3 pos) { this->position = pos; recalculateMatrix(); }

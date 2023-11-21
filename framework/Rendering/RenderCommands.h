@@ -18,6 +18,7 @@ namespace RenderCommands
 
     inline void DrawIndex(const std::shared_ptr<VertexArray>& vao, GLenum primitive = GL_TRIANGLES)
     {
+        vao->Bind();
         glDrawElements(primitive, vao->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
     }
 

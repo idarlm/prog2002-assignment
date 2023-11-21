@@ -26,6 +26,12 @@ unsigned AssignmentApplication::Run() const
 		glfwPollEvents();
 		Clear();
 
+		// update all entities
+		for (auto e : entities)
+		{
+			e->Update(0.1f);
+		}
+
 		glfwSwapBuffers(window);
 	}
 
