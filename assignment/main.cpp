@@ -1,9 +1,9 @@
 #include <logger.h>
 #include <TextureManager.h>
 #include "src/AssignmentApplication.h"
-#include "src/Input.h"
+#include <Input.h>
 
-Input* input;
+InputManager* input;
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -28,18 +28,18 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 int main()
 {
 	// set up input manager
-	input = Input::GetInstance();
-	Input::BindButton("Quit", GLFW_KEY_Q);
-	Input::BindButton("Left", GLFW_KEY_LEFT);
-	Input::BindButton("Right", GLFW_KEY_RIGHT);
-	Input::BindButton("Up", GLFW_KEY_UP);
-	Input::BindButton("Down", GLFW_KEY_DOWN);
-	Input::BindButton("Select", GLFW_KEY_ENTER);
-	Input::BindButton("RotateLeft", GLFW_KEY_L);
-	Input::BindButton("RotateRight", GLFW_KEY_H);
-	Input::BindButton("ZoomIn", GLFW_KEY_P);
-	Input::BindButton("ZoomOut", GLFW_KEY_O);
-	Input::BindButton("ToggleTextures", GLFW_KEY_T);
+	input = InputManager::GetInstance();
+	InputManager::BindButton("Quit", GLFW_KEY_Q);
+	InputManager::BindButton("Left", GLFW_KEY_LEFT);
+	InputManager::BindButton("Right", GLFW_KEY_RIGHT);
+	InputManager::BindButton("Up", GLFW_KEY_UP);
+	InputManager::BindButton("Down", GLFW_KEY_DOWN);
+	InputManager::BindButton("Select", GLFW_KEY_ENTER);
+	InputManager::BindButton("RotateLeft", GLFW_KEY_L);
+	InputManager::BindButton("RotateRight", GLFW_KEY_H);
+	InputManager::BindButton("ZoomIn", GLFW_KEY_P);
+	InputManager::BindButton("ZoomOut", GLFW_KEY_O);
+	InputManager::BindButton("ToggleTextures", GLFW_KEY_T);
 
 	// create glfw app
 	auto app = AssignmentApplication("v0.0.0");

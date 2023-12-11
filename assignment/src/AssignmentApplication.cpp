@@ -1,8 +1,8 @@
 #include <logger.h>
 #include <RenderCommands.h>
 #include <PerspectiveCamera.h>
+#include <Input.h>
 #include "AssignmentApplication.h"
-#include "Input.h"
 #include "Prefabs.h"
 #include "AssignmentShaders.h"
 
@@ -96,10 +96,10 @@ unsigned AssignmentApplication::Run() const
 	float time = 0.f;
 	while (!glfwWindowShouldClose(window))
 	{
-		glfwSetWindowShouldClose(window, Input::ButtonDown("Quit"));
+		glfwSetWindowShouldClose(window, InputManager::ButtonDown("Quit"));
 
 		// Update input flags and clear screen
-		Input::ClearFlags();
+		InputManager::ClearFlags();
 		glfwPollEvents();
 		Clear();
 
@@ -107,13 +107,13 @@ unsigned AssignmentApplication::Run() const
 		time = glfwGetTime();
 
 		// update tile selector
-		Input::ButtonDown("Right")	&& x < 7 && ++x;
-		Input::ButtonDown("Left")	&& x > 0 && --x;
-		Input::ButtonDown("Up")		&& y < 7 && ++y;
-		Input::ButtonDown("Down")	&& y > 0 && --y;
+		InputManager::ButtonDown("Right")	&& x < 7 && ++x;
+		InputManager::ButtonDown("Left")	&& x > 0 && --x;
+		InputManager::ButtonDown("Up")		&& y < 7 && ++y;
+		InputManager::ButtonDown("Down")	&& y > 0 && --y;
 		int targeted = x + (8 * y);
 
-		if (Input::ButtonDown("Select"))
+		if (InputManager::ButtonDown("Select"))
 		{
 			auto newSelection = board[targeted];
 
@@ -136,18 +136,18 @@ unsigned AssignmentApplication::Run() const
 		}
 
 		// rotate camera
-		cameraRot -= dt * (Input::ButtonHeld("RotateRight") ? 1.0f : 0.0f);
-		cameraRot += dt * (Input::ButtonHeld("RotateLeft") ? 1.0f : 0.0f);
+		cameraRot -= dt * (InputManager::ButtonHeld("RotateRight") ? 1.0f : 0.0f);
+		cameraRot += dt * (InputManager::ButtonHeld("RotateLeft") ? 1.0f : 0.0f);
 		camera.SetPosition(glm::vec3(sin(cameraRot), 1.0f, cos(cameraRot)));
 
 		// zoom camera
-		cameraZoom -= dt * (Input::ButtonHeld("ZoomIn") ? 1.0f : 0.0f);
-		cameraZoom += dt * (Input::ButtonHeld("ZoomOut") ? 1.0f : 0.0f);
+		cameraZoom -= dt * (InputManager::ButtonHeld("ZoomIn") ? 1.0f : 0.0f);
+		cameraZoom += dt * (InputManager::ButtonHeld("ZoomOut") ? 1.0f : 0.0f);
 		cameraZoom = clamp01(cameraZoom);
 		camera.SetFov(lerp(30.0f, 75.0f, cameraZoom));
 
 		// update all entities
-		showTextures ^= Input::ButtonDown("ToggleTextures");
+		showTextures ^= InputManager::ButtonDown("ToggleTextures");
 		for (auto& e : entities)
 		{
 			auto id = e->GetID();
