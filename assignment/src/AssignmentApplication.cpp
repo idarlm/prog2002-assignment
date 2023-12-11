@@ -187,7 +187,11 @@ unsigned AssignmentApplication::Run() const
 				posx = (posx / 8.f) - 0.5f + 0.5f / 8.f;
 				posz = (-posz / 8.f) + 0.5f - 0.5f / 8.f;
 
-				e->SetPosition(glm::vec3(posx, 0.075f, posz));
+				float posy = id == selected ? 0.09f + (0.02f * sin(time * 3.1415f)) : 0.075f;
+				float roty = id == selected ? time * 90.0f : 0.0f;
+
+				e->SetPosition(glm::vec3(posx, posy, posz));
+				e->SetEulerAngles(0.0f, roty, 0.0f);
 
 				// update uniforms
 				auto s = e->GetShader();
