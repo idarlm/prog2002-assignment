@@ -8,27 +8,28 @@
 /// <summary>
 /// Input is a singleton that provides easier access input state.
 /// </summary>
-class Input
+class InputManager
 {
 private:
 	// Singleton
-	inline static Input* instance = nullptr;
+	inline static InputManager* instance = nullptr;
 
 	// Constructor
 	// There are probably more contructors that 
 	// should be removed as well. 
-	Input() {};
+	InputManager() {};
+	~InputManager() { instance = nullptr; }
 
 public:
 	// Static methods
 
 	/// <summary>
-	/// Get the Input instance
+	/// Get the Input instance.
 	/// </summary>
-	static Input* GetInstance();
+	static InputManager* GetInstance();
 
 	/// <summary>
-	/// 
+	/// Create a binding to the key code.
 	/// </summary>
 	/// <param name="name">Button name</param>
 	/// <param name="keyCode">GLFW key code</param>
@@ -54,7 +55,6 @@ public:
 public:
 	struct ButtonBinding
 	{
-		std::string name;
 		int keyCode = 0;
 		bool pressed = false;
 		bool released = false;

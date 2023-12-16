@@ -40,6 +40,7 @@ public:
 	// getters and setters
 	void SetPosition(glm::vec3 pos) { this->position = pos; recalculateMatrix(); }
 	void SetRotation(float rot, glm::vec3 axis) { this->rotation = rot; this->rotationAxis = axis; recalculateMatrix(); }
+	void SetEulerAngles(float x, float y, float z);
 	void SetScale(glm::vec3 scale) { this->scale = scale; recalculateMatrix(); }
 
 	int GetID() { return id; }

@@ -28,6 +28,18 @@ void Entity::recalculateMatrix()
 	matrix = glm::scale(matrix, this->scale);
 }
 
+void Entity::SetEulerAngles(float x, float y, float z)
+{
+	matrix = mat4(1.f);
+	matrix = translate(matrix, position);
+
+	matrix = rotate(matrix, radians(z), vec3(0.0f, 0.0f, 1.0f));
+	matrix = rotate(matrix, radians(y), vec3(0.0f, 1.0f, 0.0f));
+	matrix = rotate(matrix, radians(x), vec3(1.0f, 0.0f, 0.0f));
+
+	matrix = glm::scale(matrix, this->scale);
+}
+
 void Entity::Update(float dt)
 {
 	shader->Bind();	

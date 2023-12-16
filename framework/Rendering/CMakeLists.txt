@@ -2,7 +2,7 @@ add_library(Rendering STATIC ShaderDataTypes.h VertexBuffer.h VertexBuffer.cpp I
 add_library(Framework::Rendering ALIAS Rendering)
 
 target_link_libraries(Rendering PUBLIC glad glm stb Framework::Logger)
-target_include_directories(GLFWApplication PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(Rendering PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
 target_compile_definitions(
 	Rendering PRIVATE

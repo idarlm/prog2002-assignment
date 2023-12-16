@@ -5,7 +5,7 @@ add_subdirectory(src)
 add_executable(assignment main.cpp)
 
 # link libraries
-target_link_libraries(assignment PRIVATE AssignmentSrc)
+target_link_libraries(assignment PRIVATE AssignmentSrc Framework::InputManager)
 
 # custom commands for copying images
 add_custom_command(
