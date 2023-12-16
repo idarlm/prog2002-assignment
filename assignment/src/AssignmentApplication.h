@@ -4,7 +4,7 @@
 #include <GLFWApplication.h>
 #include <list>
 #include <memory>
-#include "Entity.h"
+#include <Entity.h>
 
 /// <summary>
 /// AssignmentApplication contains the code for data loading

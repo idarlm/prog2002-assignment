@@ -1,4 +1,4 @@
-add_library(AssignmentSrc STATIC "AssignmentApplication.h" "AssignmentApplication.cpp" "Entity.h" "Entity.cpp" "Prefabs.h" "AssignmentShaders.h")
+add_library(AssignmentSrc STATIC "AssignmentApplication.h" "AssignmentApplication.cpp" "Prefabs.h" "AssignmentShaders.h")
 
 target_link_libraries(
 	AssignmentSrc PUBLIC 
@@ -8,4 +8,5 @@ target_link_libraries(
 	Framework::Rendering 
 	Framework::GeometricTools
 	Framework::InputManager
+	Framework::Entity
 )
