@@ -1,28 +1,33 @@
-# PROG20002 Graphics Programming
+# PROG2002 Graphics Programming
 
-Group 5 - *Idar Løkset Mykløy (@idarmy)*
+![Animation](https://github.com/idarlm/prog2002-assignment/assets/101576034/07432af9-101c-4e83-9ca8-fd0fa14caa59)
 
-Welcome to the repo for my project.
+## Project overview
 
+This project was done as part of the PROG2002 course at NTNU Gjøvik. The goal of this project was to create a simple OpenGL renderer using GLFW and GLAD.
 
-# Project overview
+We were supplied with a repo containing the base file structure and submodules. From there we had to follow issues showing how to implement framework components that we would use to solve the assignment.
+These issues are not visible here as the original repo was in a private Gitlab instance.
 
-**Project file structure:**
+## How to run the project
 
-```
-assignment
- |- resources
- |  |- textures
- |      |- floor_texture.png
- |      |- cube_texture.png
- |- src
- |  |- [All the custom code for the assignment]
- |- CMakeLists.txt
- |- main.cpp
-```
+Most dependencies are provided as submodules and statically linked. On windows it should run right out of the box when built with CMake in Visual Studio.
+On linux you might need some additional packages to build.
 
-I have put all the assignment specific code in the src subfolder.
-That code mostly builds upon the Framework components from the labs.
+## Using the application
+
+When the application is running you can interact with it using these keys:
+
+ | Key(s) | Actions |
+ | :-- | :-- |
+ | H, L | Orbit camera |
+ | O, P | Change zoom level |
+ | Arrow Keys | Select tile |
+ | Enter | Select/place cube |
+
+The application allows you to select cubes and move them to unoccupied tiles.
+
+## Postmortem
 
 The code implements all features from the assignment issues.
 However there are still things I wish i had time to implement:
@@ -30,7 +35,4 @@ However there are still things I wish i had time to implement:
 This would make the application loop much cleaner, and would make it easier to expand the functionality of each entity.
  - A shader manager. Right now all the shaders are stored in a header file. I would have liked to store them
   in seperate files and load them in a similar fashion to the TextureManager.
- - The input system is easy to use, which is it's main purpose, but could still be expanded upon. 
- Binding inputs to an axis, where the input value is read as a float between -1 and 1 would simplify the movement related code.
-
- I have tested natively on windows and ubuntu, so hopefully you won't run into any issues when trying to compile.
+ - The cubes are supposed to be transparent, however the draw order is not sorted so they are drawn before the board.
